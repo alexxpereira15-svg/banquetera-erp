@@ -68,44 +68,74 @@
                 </div>
 
                 <div id="cotizaciones" class="page">
-                    <div class="bg-white p-8 rounded-xl shadow-lg max-w-2xl mx-auto border">
-                        <h2 class="text-2xl font-bold mb-6 text-slate-800 text-center border-b pb-4">Cotizador Pro</h2>
+                    <div class="bg-white p-8 rounded-2xl shadow-xl max-w-4xl mx-auto border border-slate-200">
+                        <div class="flex justify-between items-center mb-6 border-b pb-4">
+                            <h2 class="text-2xl font-black text-slate-800">Cotizador Inteligente</h2>
+                            <span class="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest">Mérida Elite</span>
+                        </div>
                         
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-500 mb-1">CLIENTE</label>
-                                <input type="text" id="cot-cliente" class="w-full p-2 border rounded outline-none">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                            <div class="space-y-4">
+                                <p class="text-blue-600 font-bold text-xs uppercase tracking-tighter border-b border-blue-100 pb-1">Perfil del Cliente</p>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase">Nombre del Cliente / Empresa</label>
+                                    <input type="text" id="cot-cliente" class="w-full p-3 bg-slate-50 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition" placeholder="Ej. Boda Familia Peniche">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase">Tipo de Cliente</label>
+                                    <select id="cot-tipo-cliente" class="w-full p-3 bg-slate-50 border rounded-lg outline-none">
+                                        <option>Particular</option>
+                                        <option>Empresa / Corporativo</option>
+                                        <option>Organizador de Eventos</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase">Tipo de Evento</label>
+                                    <select id="cot-tipo-evento" class="w-full p-3 bg-slate-50 border rounded-lg outline-none">
+                                        <option>Boda</option>
+                                        <option>XV Años</option>
+                                        <option>Corporativo</option>
+                                        <option>Bautizo / Social</option>
+                                    </member>
+                                </div>
                             </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-500 mb-1">PERSONAS</label>
-                                <input type="number" id="cot-pax" class="w-full p-2 border rounded outline-none" oninput="calcularTotal()">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-500 mb-1">PRECIO X PLATILLO ($)</label>
-                                <input type="number" id="cot-precio" class="w-full p-2 border rounded outline-none" oninput="calcularTotal()">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-500 mb-1">EXTRAS ($)</label>
-                                <input type="number" id="cot-extras" value="0" class="w-full p-2 border rounded outline-none" oninput="calcularTotal()">
+                
+                            <div class="space-y-4">
+                                <p class="text-blue-600 font-bold text-xs uppercase tracking-tighter border-b border-blue-100 pb-1">Conceptos de Banquetes</p>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase">Personas</label>
+                                        <input type="number" id="cot-pax" oninput="calcularPro()" class="w-full p-3 bg-slate-50 border rounded-lg outline-none" placeholder="0">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase">Menú p/p ($)</label>
+                                        <input type="number" id="cot-precio" oninput="calcularPro()" class="w-full p-3 bg-slate-50 border rounded-lg outline-none" placeholder="350">
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-1 gap-2">
+                                    <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase">Servicios Adicionales (Suma total)</label>
+                                    <input type="number" id="cot-extras-total" oninput="calcularPro()" class="w-full p-3 bg-slate-50 border rounded-lg outline-none" placeholder="Meseros, Mobiliario, Música...">
+                                    <textarea id="cot-detalles" rows="2" class="w-full p-2 text-xs border rounded-lg bg-slate-50" placeholder="Escribe aquí qué incluye (Ej. 10 Meseros, DJ, Barra Libre...)"></textarea>
+                                </div>
                             </div>
                         </div>
-
-                        <div class="bg-slate-900 text-white p-6 rounded-xl mb-6 text-center shadow-inner">
-                            <p class="text-sm opacity-70 uppercase font-bold">Inversión Total</p>
-                            <p id="cot-total-text" class="text-4xl font-black text-blue-400">$0.00</p>
+                
+                        <div class="bg-slate-900 rounded-2xl p-6 mb-8 text-center border-t-4 border-blue-500">
+                            <p class="text-blue-400 text-xs font-bold uppercase mb-1">Presupuesto Estimado</p>
+                            <p id="cot-total-pro" class="text-5xl font-black text-white">$0.00</p>
+                            <p class="text-slate-500 text-[10px] mt-2 italic">Basado en Mérida, Yucatán. Incluye logística básica.</p>
                         </div>
-
-                        <div class="flex flex-col md:flex-row gap-2">
-                            <button onclick="guardarCotizacion()" class="flex-1 bg-blue-600 text-white font-bold p-3 rounded-lg hover:bg-blue-700 transition">
-                                <i class="fas fa-save mr-2"></i>GUARDAR REGISTRO
+                
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <button onclick="guardarCotizacionPro()" class="bg-blue-600 text-white font-black p-4 rounded-xl hover:bg-blue-700 transition-all shadow-lg flex items-center justify-center">
+                                <i class="fas fa-cloud-upload-alt mr-2"></i> REGISTRAR EN CRM
                             </button>
-                            <button onclick="enviarWhatsApp()" class="flex-1 bg-green-500 text-white font-bold p-3 rounded-lg hover:bg-green-600 transition">
-                                <i class="fab fa-whatsapp mr-2"></i>ENVIAR POR WHATSAPP
+                            <button onclick="enviarWhatsAppPro()" class="bg-green-500 text-white font-black p-4 rounded-xl hover:bg-green-600 transition-all shadow-lg flex items-center justify-center">
+                                <i class="fab fa-whatsapp mr-2 text-xl"></i> ENVIAR COTIZACIÓN
                             </button>
                         </div>
                     </div>
                 </div>
-
                 <div id="inventario" class="page">
                     <div class="flex justify-between items-center mb-6">
                         <h2 class="text-2xl font-bold text-slate-800">Control de Almacén</h2>
@@ -170,40 +200,54 @@
             status.innerText = "Sistema Listo";
         }
 
-        function calcularTotal() {
+        function calcularPro() {
             const pax = parseFloat(document.getElementById('cot-pax').value) || 0;
             const precio = parseFloat(document.getElementById('cot-precio').value) || 0;
-            const extras = parseFloat(document.getElementById('cot-extras').value) || 0;
+            const extras = parseFloat(document.getElementById('cot-extras-total').value) || 0;
+            
             const total = (pax * precio) + extras;
-            document.getElementById('cot-total-text').innerText = '$' + total.toLocaleString();
+            document.getElementById('cot-total-pro').innerText = '$' + total.toLocaleString();
             return total;
         }
-
-        async function guardarCotizacion() {
-            const cliente = document.getElementById('cot-cliente').value;
-            const pax = document.getElementById('cot-pax').value;
-            const precio = document.getElementById('cot-precio').value;
-            const total = calcularTotal();
-
-            if(!cliente || !total) return alert('Datos incompletos');
-
+        
+        async function guardarCotizacionPro() {
+            const data = {
+                tipo: "cotizacion",
+                tipo_cliente: document.getElementById('cot-tipo-cliente').value,
+                tipo_evento: document.getElementById('cot-tipo-evento').value,
+                cliente: document.getElementById('cot-cliente').value,
+                personas: document.getElementById('cot-pax').value,
+                menu: document.getElementById('cot-precio').value,
+                extras_detalle: document.getElementById('cot-detalles').value,
+                total: calcularPro()
+            };
+        
+            if(!data.cliente || data.total <= 0) return alert('Datos incompletos');
+        
             const status = document.getElementById('save-status');
-            status.innerText = "Sincronizando Cotización...";
-
-            await fetch(SCRIPT_URL, {
-                method: 'POST',
-                body: JSON.stringify({ tipo: "cotizacion", cliente, personas: pax, precio, total })
-            });
-
+            status.innerText = "Registrando en CRM...";
+            
+            await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(data) });
+        
             status.innerText = "Sistema Listo";
-            alert('¡Cotización guardada en tu Excel!');
+            alert('¡Cliente y Cotización registrados exitosamente!');
         }
-
-        function enviarWhatsApp() {
+        
+        function enviarWhatsAppPro() {
             const cliente = document.getElementById('cot-cliente').value;
+            const evento = document.getElementById('cot-tipo-evento').value;
             const pax = document.getElementById('cot-pax').value;
-            const total = calcularTotal();
-            const mensaje = `*BANQUETERA 360*%0A%0AHola *${cliente}*, este es el presupuesto solicitado:%0A%0A👥 *Capacidad:* ${pax} personas.%0A💰 *Total estimado:* $${total.toLocaleString()}%0A%0A_¿Te gustaría confirmar la fecha?_`;
+            const total = calcularPro();
+            const detalles = document.getElementById('cot-detalles').value;
+            
+            const mensaje = `*PRESUPUESTO PROFESIONAL - BANQUETERA 360*%0A%0A` +
+                `Estimado/a *${cliente}*, es un gusto saludarle. Presentamos la propuesta para su *${evento}*:%0A%0A` +
+                `👥 *Invitados:* ${pax}%0A` +
+                `📋 *Servicios incluidos:* ${detalles || 'Banquete Completo'}%0A%0A` +
+                `*INVERSIÓN TOTAL:* $${total.toLocaleString()}%0A%0A` +
+                `_Nota: Precios sujetos a cambios según logística en Mérida y alrededores._%0A%0A` +
+                `¿Le gustaría que agendemos una cita para definir el menú?`;
+            
             window.open(`https://wa.me/?text=${mensaje}`, '_blank');
         }
         async function cargarInventario() {

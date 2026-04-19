@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Banquetera360 - ERP</title>
+    <title>Banquetera360 - ERP Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -21,7 +21,7 @@
             <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
                 <button onclick="showPage('dashboard')" class="sidebar-item w-full text-left p-3 hover:bg-slate-800 rounded-lg transition flex items-center"><i class="fas fa-home w-6"></i> Dashboard</button>
                 <button onclick="showPage('agenda')" class="sidebar-item w-full text-left p-3 hover:bg-slate-800 rounded-lg transition flex items-center"><i class="fas fa-calendar-alt w-6"></i> Agenda</button>
-                <button onclick="showPage('cotizaciones')" class="sidebar-item w-full text-left p-3 hover:bg-slate-800 rounded-lg transition flex items-center"><i class="fas fa-file-invoice-dollar w-6"></i> Cotizaciones</button>
+                <button onclick="showPage('cotizaciones')" class="sidebar-item w-full text-left p-3 hover:bg-slate-800 rounded-lg transition flex items-center"><i class="fas fa-file-invoice-dollar w-6"></i> Cotizador Pro</button>
                 <button onclick="showPage('inventario')" class="sidebar-item w-full text-left p-3 hover:bg-slate-800 rounded-lg transition flex items-center"><i class="fas fa-utensils w-6"></i> Inventario</button>
             </nav>
             <div class="p-4 bg-slate-800 text-xs text-center text-slate-400">Mérida, Yucatán</div>
@@ -36,34 +36,30 @@
             <div class="p-6 overflow-y-auto flex-1">
                 <div id="dashboard" class="page active">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                        <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-blue-500">
-                            <p class="text-slate-400 text-xs font-bold uppercase">Ingresos Estimados</p>
-                            <p class="text-2xl font-black text-slate-800">$185,000</p>
+                        <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-blue-500 text-center">
+                            <p class="text-slate-400 text-xs font-bold uppercase">Ubicación Actual</p>
+                            <p class="text-2xl font-black text-slate-800">Mérida, Yuc.</p>
                         </div>
-                        <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-purple-500">
-                            <p class="text-slate-400 text-xs font-bold uppercase">Eventos en Agenda</p>
+                        <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-purple-500 text-center">
+                            <p class="text-slate-400 text-xs font-bold uppercase">Eventos Próximos</p>
                             <p id="count-eventos" class="text-2xl font-black text-slate-800">0</p>
-                        </div>
-                        <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-orange-500">
-                            <p class="text-slate-400 text-xs font-bold uppercase">Ubicación</p>
-                            <p class="text-2xl font-black text-slate-800">Mérida</p>
                         </div>
                     </div>
                 </div>
 
                 <div id="agenda" class="page">
                     <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 mb-6">
-                        <h2 class="text-lg font-bold mb-4">Nuevo Evento</h2>
+                        <h2 class="text-lg font-bold mb-4">Agendar Evento Confirmado</h2>
                         <form id="event-form" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <input type="text" id="ev-cliente" placeholder="Nombre del Cliente" class="p-2 border rounded">
-                            <input type="date" id="ev-fecha" class="p-2 border rounded">
-                            <input type="text" id="ev-lugar" placeholder="Lugar (Hacienda, Salón...)" class="p-2 border rounded">
-                            <button type="button" onclick="saveEvent()" class="bg-blue-600 text-white font-bold p-2 rounded col-span-full hover:bg-blue-700">GUARDAR EN GOOGLE SHEETS</button>
+                            <input type="text" id="ev-cliente" placeholder="Nombre del Cliente" class="p-2 border rounded outline-none focus:ring-2 focus:ring-blue-400">
+                            <input type="date" id="ev-fecha" class="p-2 border rounded outline-none">
+                            <input type="text" id="ev-lugar" placeholder="Lugar del evento" class="p-2 border rounded outline-none">
+                            <button type="button" onclick="saveEvent()" class="bg-blue-600 text-white font-bold p-2 rounded col-span-full hover:bg-blue-700 transition">GUARDAR EN AGENDA</button>
                         </form>
                     </div>
                     <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-slate-200">
                         <table class="w-full text-left">
-                            <thead class="bg-slate-50 text-xs uppercase text-slate-500">
+                            <thead class="bg-slate-50 text-xs uppercase text-slate-500 font-bold">
                                 <tr><th class="p-4">Cliente</th><th class="p-4">Fecha</th><th class="p-4">Lugar</th></tr>
                             </thead>
                             <tbody id="agenda-table-body" class="text-sm"></tbody>
@@ -72,23 +68,48 @@
                 </div>
 
                 <div id="cotizaciones" class="page">
-                    <div class="bg-white p-8 rounded-xl shadow-lg max-w-md mx-auto border">
-                        <h2 class="text-xl font-bold mb-4 text-center">Calculadora de Evento</h2>
-                        <div class="space-y-4">
-                            <input type="number" id="cot-pax" placeholder="Número de personas" class="w-full p-2 border rounded">
-                            <input type="number" id="cot-precio" placeholder="Precio por platillo" class="w-full p-2 border rounded">
-                            <div class="bg-blue-900 text-white p-4 rounded text-center">
-                                <p class="text-xs uppercase opacity-70">Total Estimado</p>
-                                <p id="cot-res" class="text-3xl font-black">$0.00</p>
+                    <div class="bg-white p-8 rounded-xl shadow-lg max-w-2xl mx-auto border">
+                        <h2 class="text-2xl font-bold mb-6 text-slate-800 text-center border-b pb-4">Cotizador Pro</h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1">CLIENTE</label>
+                                <input type="text" id="cot-cliente" class="w-full p-2 border rounded outline-none">
                             </div>
-                            <button onclick="document.getElementById('cot-res').innerText = '$' + (document.getElementById('cot-pax').value * document.getElementById('cot-precio').value).toLocaleString()" class="w-full bg-green-600 text-white p-2 rounded font-bold">CALCULAR</button>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1">PERSONAS</label>
+                                <input type="number" id="cot-pax" class="w-full p-2 border rounded outline-none" oninput="calcularTotal()">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1">PRECIO X PLATILLO ($)</label>
+                                <input type="number" id="cot-precio" class="w-full p-2 border rounded outline-none" oninput="calcularTotal()">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1">EXTRAS ($)</label>
+                                <input type="number" id="cot-extras" value="0" class="w-full p-2 border rounded outline-none" oninput="calcularTotal()">
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-900 text-white p-6 rounded-xl mb-6 text-center shadow-inner">
+                            <p class="text-sm opacity-70 uppercase font-bold">Inversión Total</p>
+                            <p id="cot-total-text" class="text-4xl font-black text-blue-400">$0.00</p>
+                        </div>
+
+                        <div class="flex flex-col md:flex-row gap-2">
+                            <button onclick="guardarCotizacion()" class="flex-1 bg-blue-600 text-white font-bold p-3 rounded-lg hover:bg-blue-700 transition">
+                                <i class="fas fa-save mr-2"></i>GUARDAR REGISTRO
+                            </button>
+                            <button onclick="enviarWhatsApp()" class="flex-1 bg-green-500 text-white font-bold p-3 rounded-lg hover:bg-green-600 transition">
+                                <i class="fab fa-whatsapp mr-2"></i>ENVIAR POR WHATSAPP
+                            </button>
                         </div>
                     </div>
                 </div>
 
                 <div id="inventario" class="page">
-                    <div class="bg-white p-6 rounded-xl shadow-sm">
-                        <p class="text-slate-500 italic">Módulo de inventario conectado próximamente...</p>
+                    <div class="bg-white p-6 rounded-xl shadow-sm text-center">
+                        <i class="fas fa-tools text-4xl text-slate-300 mb-4"></i>
+                        <p class="text-slate-500 italic">Módulo de inventario en construcción...</p>
                     </div>
                 </div>
             </div>
@@ -96,19 +117,19 @@
     </div>
 
     <script>
-        // --- PEGA TU URL AQUÍ ABAJO ---
+        // --- PEGA TU URL AQUÍ ---
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx0bOMv0gvrHyqPv7fqYOZtipvnK_ZrYjedSOhMUV-KXpfdQjSo6EQ4NXwQLh44ny0y/exec"; 
 
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
-            document.getElementById('page-title').innerText = pageId;
+            document.getElementById('page-title').innerText = pageId.toUpperCase();
         }
 
         async function renderAgenda() {
             const table = document.getElementById('agenda-table-body');
-            table.innerHTML = '<tr><td colspan="3" class="p-4 text-center animate-pulse text-blue-600 font-bold">Cargando datos de Google Sheets...</td></tr>';
+            table.innerHTML = '<tr><td colspan="3" class="p-4 text-center animate-pulse text-blue-600 font-bold">Conectando con Google Sheets...</td></tr>';
             try {
                 const response = await fetch(SCRIPT_URL);
                 const eventos = await response.json();
@@ -117,11 +138,11 @@
                     <tr class="border-b hover:bg-blue-50">
                         <td class="p-4 font-bold text-slate-700">${ev.cliente}</td>
                         <td class="p-4">${ev.fecha}</td>
-                        <td class="p-4 text-slate-500">${ev.lugar}</td>
+                        <td class="p-4 text-slate-500 italic">${ev.lugar}</td>
                     </tr>
                 `).join('');
             } catch (e) {
-                table.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-red-500">Error al conectar con la base de datos</td></tr>';
+                table.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-red-500">Error de conexión</td></tr>';
             }
         }
 
@@ -129,22 +150,56 @@
             const cliente = document.getElementById('ev-cliente').value;
             const fecha = document.getElementById('ev-fecha').value;
             const lugar = document.getElementById('ev-lugar').value;
-            if(!cliente || !fecha) return alert('Cliente y Fecha son obligatorios');
+            if(!cliente || !fecha) return alert('Por favor llena Cliente y Fecha');
 
             const status = document.getElementById('save-status');
-            status.innerText = "Guardando en la Nube...";
-            status.classList.replace('text-green-600', 'text-orange-600');
+            status.innerText = "Guardando...";
 
             await fetch(SCRIPT_URL, {
                 method: 'POST',
-                body: JSON.stringify({ cliente, fecha, lugar })
+                body: JSON.stringify({ tipo: "evento", cliente, fecha, lugar })
             });
 
             document.getElementById('event-form').reset();
             await renderAgenda();
-            status.innerText = "¡Sincronizado!";
-            status.classList.replace('text-orange-600', 'text-green-600');
-            setTimeout(() => status.innerText = "Sistema Listo", 2000);
+            status.innerText = "Sistema Listo";
+        }
+
+        function calcularTotal() {
+            const pax = parseFloat(document.getElementById('cot-pax').value) || 0;
+            const precio = parseFloat(document.getElementById('cot-precio').value) || 0;
+            const extras = parseFloat(document.getElementById('cot-extras').value) || 0;
+            const total = (pax * precio) + extras;
+            document.getElementById('cot-total-text').innerText = '$' + total.toLocaleString();
+            return total;
+        }
+
+        async function guardarCotizacion() {
+            const cliente = document.getElementById('cot-cliente').value;
+            const pax = document.getElementById('cot-pax').value;
+            const precio = document.getElementById('cot-precio').value;
+            const total = calcularTotal();
+
+            if(!cliente || !total) return alert('Datos incompletos');
+
+            const status = document.getElementById('save-status');
+            status.innerText = "Sincronizando Cotización...";
+
+            await fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify({ tipo: "cotizacion", cliente, personas: pax, precio, total })
+            });
+
+            status.innerText = "Sistema Listo";
+            alert('¡Cotización guardada en tu Excel!');
+        }
+
+        function enviarWhatsApp() {
+            const cliente = document.getElementById('cot-cliente').value;
+            const pax = document.getElementById('cot-pax').value;
+            const total = calcularTotal();
+            const mensaje = `*BANQUETERA 360*%0A%0AHola *${cliente}*, este es el presupuesto solicitado:%0A%0A👥 *Capacidad:* ${pax} personas.%0A💰 *Total estimado:* $${total.toLocaleString()}%0A%0A_¿Te gustaría confirmar la fecha?_`;
+            window.open(`https://wa.me/?text=${mensaje}`, '_blank');
         }
 
         renderAgenda();

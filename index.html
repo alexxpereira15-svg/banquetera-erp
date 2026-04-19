@@ -147,10 +147,12 @@
                     </div>
                     <div>
                         <label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Método de Pago</label>
-                        <select id="cot-metodo-pago" onchange="recalcularCarrito()" class="w-full p-4 border rounded-xl font-bold bg-white outline-none">
-                            <option value="efectivo">Efectivo / Transferencia (0%)</option>
-                            <option value="tarjeta">Tarjeta Débito/Crédito (+3.5%)</option>
-                            <option value="paypal">PayPal (+5.5%)</option>
+                        <select id="cot-metodo-pago" onchange="recalcularCarrito()" class="w-full p-4 border rounded-xl font-bold bg-white">
+                            <option value="Efectivo">Efectivo </option>
+                            <option value="Transferencia">Transferencia </option>
+                            <option value="Tarjeta de Crédito">Tarjeta de Crédito </option>
+                            <option value="Tarjeta de Débito">Tarjeta de Débito </option>
+                            <option value="PayPal">PayPal </option>
                         </select>
                     </div>
                     <div class="bg-blue-50 p-4 rounded-2xl">
@@ -194,11 +196,13 @@
         </div>
     </div>
 
+   
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwZ3AAlHPyNvPl9kcR0h7OZ42xvI7iMtwHgog6DDgNhUy4W988ZJhCL2lSZtyb0zQ0M/exec"; // <--- NO OLVIDES PONER TU URL
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxYeDIm0-GX3sfeOtvCeSDYO2GNOfB-9sOEK6IKLMXIyP-yZAOCVqKQpnpW3JMgjAYz/exec"; // <--- ASEGÚRATE DE PONER TU URL
         let dbGlobal = { productos: [], clientes: [], eventos: [] };
         let carrito = [];
-
+        
+        // 1. ARRANQUE DEL SISTEMA
         async function inicializarSistema() {
             document.getElementById('save-status').innerText = "Sincronizando...";
             try {
@@ -207,6 +211,7 @@
                 actualizarSelectClientes();
                 renderInventario();
                 renderAgenda();
+                // Actualizar contadores del Dashboard
                 document.getElementById('count-eventos').innerText = dbGlobal.eventos.length;
                 document.getElementById('count-clientes').innerText = dbGlobal.clientes.length;
                 document.getElementById('count-stock').innerText = dbGlobal.productos.length;
@@ -216,16 +221,16 @@
                 document.getElementById('save-status').innerText = "Error de Conexión";
             }
         }
-
+        
+        // 2. NAVEGACIÓN
         function showPage(p) {
             document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
             document.querySelectorAll('.sidebar-item').forEach(x => x.classList.remove('active'));
             document.getElementById(p).classList.add('active');
             document.getElementById('btn-'+p).classList.add('active');
-            document.getElementById('page-title').innerText = p.toUpperCase();
         }
-
-        // LÓGICA DE VENTAS
+        
+        // 3. BUSCADOR Y CARRITO
         function buscarProductos() {
             const term = document.getElementById('busqueda-prod').value.toLowerCase();
             const table = document.getElementById('resultados-busqueda');
@@ -241,26 +246,26 @@
                 </tr>
             `).join('');
         }
-
+        
         function agregarAlCarrito(nombre, precio, costo, id, proveedor) {
             const cant = parseInt(document.getElementById('cant-'+id).value);
             const item = carrito.find(i => i.nombre === nombre);
             if(item) item.cant += cant; else carrito.push({ id, nombre, precio, costo, cant, proveedor });
             document.getElementById('cart-count').innerText = carrito.reduce((a,b)=>a+b.cant, 0);
         }
-
+        
         function verCarrito() {
             const cliente = document.getElementById('cot-cliente-select').value;
-            if(!cliente) return alert("Por favor selecciona un cliente");
+            if(!cliente) return alert("Selecciona un cliente primero");
             const cliData = dbGlobal.clientes.find(c => c.nombre === cliente) || {empresa: 'Particular'};
             document.getElementById('info-cliente-carrito').innerText = `CLIENTE: ${cliente} | ${cliData.empresa}`;
+            
             const table = document.getElementById('items-carrito');
             table.innerHTML = carrito.map(item => `
                 <tr class="border-b text-[11px] font-bold">
                     <td class="p-3 text-slate-400">${item.id}</td>
                     <td class="p-3 uppercase text-slate-800">${item.nombre}</td>
-                    <td class="p-3 text-right text-slate-400">$${item.costo}</td>
-                    <td class="p-3 text-right text-blue-600">$${item.precio}</td>
+                    <td class="p-3 text-right text-blue-600">$${item.precio.toLocaleString()}</td>
                     <td class="p-3 text-center font-black">${item.cant}</td>
                     <td class="p-3 text-right font-black">$${(item.precio * item.cant).toLocaleString()}</td>
                 </tr>
@@ -268,23 +273,110 @@
             recalcularCarrito();
             document.getElementById('modal-carrito').classList.remove('hidden');
         }
-
+        
         function recalcularCarrito() {
             let subtotal = carrito.reduce((acc, item) => acc + (item.precio * item.cant), 0);
             const metodo = document.getElementById('cot-metodo-pago').value;
-            let com = (metodo === 'tarjeta') ? subtotal * 0.035 : (metodo === 'paypal') ? subtotal * 0.055 : 0;
+            // Comisiones por tipo de pago
+            let com = 0;
+            if(metodo.includes("Tarjeta")) com = subtotal * 0.035;
+            if(metodo === "PayPal") com = subtotal * 0.055;
+            
             let iva = document.getElementById('cot-factura').checked ? (subtotal + com) * 0.16 : 0;
             let total = subtotal + com + iva;
             let ant = parseFloat(document.getElementById('cot-anticipo').value) || 0;
-
+        
             document.getElementById('res-subtotal').innerText = '$' + subtotal.toLocaleString();
             document.getElementById('res-comision').innerText = '$' + com.toLocaleString();
             document.getElementById('res-iva').innerText = '$' + iva.toLocaleString();
             document.getElementById('res-total').innerText = '$' + total.toLocaleString();
             document.getElementById('res-pendiente').innerText = '$' + (total - ant).toLocaleString();
         }
-
+        
+        // 4. GENERACIÓN DE PDF PROFESIONAL (Basado en Compufax)
+        function descargarCotizacionPDF() {
+            const cliente = document.getElementById('cot-cliente-select').value;
+            const cliData = dbGlobal.clientes.find(c => c.nombre === cliente) || {};
+            const subtotal = document.getElementById('res-subtotal').innerText;
+            const iva = document.getElementById('res-iva').innerText;
+            const total = document.getElementById('res-total').innerText;
+            
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Cotización - ${cliente}</title>
+                    <script src="https://cdn.tailwindcss.com"></script>
+                </head>
+                <body class="p-10 text-slate-800">
+                    <div class="flex justify-between border-b-4 border-blue-600 pb-6 mb-8">
+                        <div>
+                            <h1 class="text-4xl font-black italic">B360.ERP</h1>
+                            <p class="text-xs uppercase font-bold text-slate-500">Servicios Integrales Mérida</p>
+                        </div>
+                        <div class="text-right">
+                            <h2 class="text-2xl font-black text-blue-600">COTIZACIÓN</h2>
+                            <p class="text-sm font-bold">Fecha: ${new Date().toLocaleDateString()}</p>
+                        </div>
+                    </div>
+        
+                    <div class="grid grid-cols-2 gap-8 mb-10">
+                        <div class="bg-slate-100 p-6 rounded-2xl">
+                            <h3 class="text-[10px] font-black text-blue-600 uppercase mb-2">Datos del Cliente</h3>
+                            <p class="text-lg font-black uppercase">${cliente}</p>
+                            <p class="text-sm">${cliData.empresa || 'Particular'}</p>
+                            <p class="text-sm text-slate-500">${cliData.direccion || 'Mérida, Yucatán'}</p>
+                        </div>
+                        <div class="bg-slate-100 p-6 rounded-2xl">
+                            <h3 class="text-[10px] font-black text-blue-600 uppercase mb-2">Información Bancaria</h3>
+                            <p class="text-sm"><strong>Banco:</strong> BANAMEX</p>
+                            <p class="text-sm"><strong>Cuenta:</strong> 1234 5678 9012</p>
+                            <p class="text-sm"><strong>CLABE:</strong> 0123 4567 8901 2345 67</p>
+                        </div>
+                    </div>
+        
+                    <table class="w-full mb-10">
+                        <thead class="bg-slate-900 text-white uppercase text-[10px]">
+                            <tr>
+                                <th class="p-3 text-left">Cant.</th>
+                                <th class="p-3 text-left">Descripción del Artículo / Servicio</th>
+                                <th class="p-3 text-right">Precio Unit.</th>
+                                <th class="p-3 text-right">Importe</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-sm font-medium">
+                            ${carrito.map(item => `
+                                <tr class="border-b">
+                                    <td class="p-3">${item.cant}</td>
+                                    <td class="p-3 font-bold uppercase">${item.nombre}</td>
+                                    <td class="p-3 text-right">$${item.precio.toLocaleString()}</td>
+                                    <td class="p-3 text-right">$${(item.precio * item.cant).toLocaleString()}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+        
+                    <div class="flex justify-end">
+                        <div class="w-72 bg-slate-50 p-6 rounded-2xl space-y-3">
+                            <div class="flex justify-between text-xs font-bold"><span>SUBTOTAL</span><span>${subtotal}</span></div>
+                            <div class="flex justify-between text-xs font-bold border-b pb-2"><span>IVA 16%</span><span>${iva}</span></div>
+                            <div class="flex justify-between text-2xl font-black text-blue-600"><span>TOTAL</span><span>${total}</span></div>
+                        </div>
+                    </div>
+        
+                    <div class="mt-20 text-[9px] text-slate-400 uppercase tracking-widest text-center border-t pt-4">
+                        Precios en MXN. Esta cotización no representa un compromiso de reserva hasta el pago del anticipo.
+                    </div>
+                    
+                    <script>window.onload = function() { window.print(); }</s` + `cript>
+                </body>
+                </html>
+            `);
+        }
+        
+        // 5. REGISTRO EN NUBE
         async function finalizarVenta() {
+            if(carrito.length === 0) return alert("El carrito está vacío");
             const data = {
                 tipo: "finalizar_venta",
                 cliente: document.getElementById('cot-cliente-select').value,
@@ -295,52 +387,10 @@
                 detalle: JSON.stringify(carrito)
             };
             await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(data) });
-            alert("Venta guardada exitosamente");
+            alert("Venta registrada y almacenada en Excel.");
             location.reload();
         }
-
-        function descargarCotizacionPDF() {
-            alert("Preparando PDF con datos bancarios y desglose fiscal...");
-            window.print();
-        }
-
-        // AGENDA E INVENTARIO
-        async function saveEvent() {
-            const data = {
-                tipo: "evento",
-                cliente: document.getElementById('ev-cliente').value,
-                fecha: document.getElementById('ev-fecha').value,
-                lugar: document.getElementById('ev-lugar').value
-            };
-            await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(data) });
-            inicializarSistema();
-        }
-
-        function renderAgenda() {
-            const table = document.getElementById('agenda-table-body');
-            table.innerHTML = dbGlobal.eventos.map(ev => `
-                <tr class="border-b hover:bg-slate-50 transition">
-                    <td class="p-5 font-black text-slate-700 uppercase">${ev.cliente}</td>
-                    <td class="p-5 font-bold text-slate-400">${ev.fecha}</td>
-                    <td class="p-5 italic text-slate-400 font-medium">${ev.lugar}</td>
-                </tr>
-            `).join('');
-        }
-
-        function renderInventario() {
-            const cont = document.getElementById('lista-inventario');
-            cont.innerHTML = dbGlobal.productos.map(p => `
-                <div class="bg-white p-6 rounded-[2rem] border shadow-sm">
-                    <p class="text-[10px] font-black text-slate-400 uppercase">${p.proveedor}</p>
-                    <p class="text-lg font-black text-slate-800 uppercase mt-1 leading-tight">${p.nombre}</p>
-                    <div class="mt-4 flex justify-between items-end">
-                        <div><p class="text-[10px] font-bold text-slate-400 uppercase">Stock</p><p class="text-2xl font-black text-blue-600">${p.stock}</p></div>
-                        <div class="text-right"><p class="text-[10px] font-bold text-slate-400 uppercase">Precio</p><p class="text-xl font-black">$${p.precio}</p></div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
+        
         async function registrarClienteExcel() {
             const n = {
                 tipo: "nuevo_cliente",
@@ -354,8 +404,45 @@
             inicializarSistema();
             cerrarModalCliente();
         }
-
-        // HELPERS
+        
+        async function saveEvent() {
+            const data = {
+                tipo: "evento",
+                cliente: document.getElementById('ev-cliente').value,
+                fecha: document.getElementById('ev-fecha').value,
+                lugar: document.getElementById('ev-lugar').value
+            };
+            await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(data) });
+            inicializarSistema();
+        }
+        
+        // 6. RENDERIZADO DE TABLAS
+        function renderAgenda() {
+            const table = document.getElementById('agenda-table-body');
+            table.innerHTML = dbGlobal.eventos.map(ev => `
+                <tr class="border-b hover:bg-slate-50 transition">
+                    <td class="p-5 font-black text-slate-700 uppercase">${ev.cliente}</td>
+                    <td class="p-5 font-bold text-slate-400">${ev.fecha}</td>
+                    <td class="p-5 italic text-slate-400 font-medium">${ev.lugar}</td>
+                </tr>
+            `).join('');
+        }
+        
+        function renderInventario() {
+            const cont = document.getElementById('lista-inventario');
+            cont.innerHTML = dbGlobal.productos.map(p => `
+                <div class="bg-white p-6 rounded-[2rem] border shadow-sm">
+                    <p class="text-[10px] font-black text-slate-400 uppercase">${p.proveedor}</p>
+                    <p class="text-lg font-black text-slate-800 uppercase mt-1 leading-tight">${p.nombre}</p>
+                    <div class="mt-4 flex justify-between items-end">
+                        <div><p class="text-[10px] font-bold text-slate-400 uppercase">Stock</p><p class="text-2xl font-black text-blue-600">${p.stock}</p></div>
+                        <div class="text-right"><p class="text-[10px] font-bold text-slate-400 uppercase">Precio</p><p class="text-xl font-black">$${p.precio}</p></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // 7. MODALES Y HELPERS
         function actualizarSelectClientes() {
             const select = document.getElementById('cot-cliente-select');
             select.innerHTML = '<option value="">-- Seleccionar --</option>' + 
@@ -365,8 +452,9 @@
         function cerrarModalCliente() { document.getElementById('modal-nuevo-cliente').classList.add('hidden'); }
         function cerrarCarrito() { document.getElementById('modal-carrito').classList.add('hidden'); }
         function limpiarCotizacion() { carrito = []; document.getElementById('cart-count').innerText = "0"; }
-
+        
         window.onload = inicializarSistema;
+        
     </script>
 </body>
 </html>

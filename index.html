@@ -70,33 +70,38 @@
               <div id="cotizaciones" class="page">
                     <div class="bg-white p-6 rounded-t-2xl shadow-sm border border-b-0">
                         <div class="flex flex-wrap gap-4 items-end">
-                            <div class="flex-1 min-w-[250px]">
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Cliente / Empresa</label>
+                            <div class="flex-1 min-w-[300px]">
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Cliente Seleccionado</label>
                                 <div class="flex gap-2">
-                                    <select id="cot-cliente-select" class="flex-1 p-2 bg-slate-50 border rounded-lg outline-none">
-                                        <option value="">Seleccionar cliente...</option>
-                                        <option value="nuevo">+ Registrar Nuevo Cliente</option>
-                                    </select>
-                                    <select id="cot-tipo-operacion" class="p-2 bg-blue-50 text-blue-700 font-bold border border-blue-200 rounded-lg outline-none">
-                                        <option value="renta">Renta</option>
-                                        <option value="evento">Evento</option>
-                                    </select>
+                                    <select id="cot-cliente-select" class="flex-1 p-2 bg-slate-50 border rounded-lg outline-none font-bold text-blue-800">
+                                        </select>
+                                    <button onclick="abrirModalCliente()" class="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-blue-700">
+                                        <i class="fas fa-user-plus mr-1"></i> NUEVO
+                                    </button>
                                 </div>
                             </div>
-                            <div class="flex-1 min-w-[250px]">
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Comentario Interno (Identificador)</label>
-                                <input type="text" id="cot-comentario" placeholder="Ej: Sillas negras, mesa redonda // Pedro García" class="w-full p-2 bg-slate-50 border rounded-lg outline-none">
                             </div>
-                            <div class="flex gap-2">
-                                <button onclick="verCarrito()" class="bg-slate-900 text-white p-2 rounded-lg relative">
-                                    <i class="fas fa-shopping-cart"></i>
-                                    <span id="cart-count" class="absolute -top-2 -right-2 bg-red-500 text-[10px] px-1.5 rounded-full">0</span>
-                                </button>
-                                <button onclick="limpiarCotizacion()" class="bg-red-100 text-red-600 p-2 rounded-lg"><i class="fas fa-trash"></i></button>
+                    </div>
+                    
+                    <div id="modal-nuevo-cliente" class="hidden fixed inset-0 bg-slate-900/80 z-[60] flex items-center justify-center p-4">
+                        <div class="bg-white rounded-3xl w-full max-w-md p-8 shadow-2xl">
+                            <h3 class="text-xl font-black mb-6 text-slate-800 border-b pb-2">Registrar Cliente Nuevo</h3>
+                            <div class="space-y-4">
+                                <input type="text" id="nc-nombre" placeholder="Nombre Completo" class="w-full p-3 bg-slate-50 border rounded-xl">
+                                <input type="text" id="nc-empresa" value="Particular" placeholder="Empresa" class="w-full p-3 bg-slate-50 border rounded-xl font-bold">
+                                <input type="text" id="nc-direccion" placeholder="Dirección en Mérida" class="w-full p-3 bg-slate-50 border rounded-xl">
+                                <div class="grid grid-cols-2 gap-2">
+                                    <input type="text" id="nc-celular" placeholder="Celular" class="p-3 bg-slate-50 border rounded-xl">
+                                    <input type="email" id="nc-correo" placeholder="Correo" class="p-3 bg-slate-50 border rounded-xl">
+                                </div>
+                            </div>
+                            <div class="flex gap-3 mt-8">
+                                <button onclick="cerrarModalCliente()" class="flex-1 bg-slate-200 text-slate-600 font-bold p-3 rounded-xl">CANCELAR</button>
+                                <button onclick="registrarClienteExcel()" class="flex-1 bg-blue-600 text-white font-bold p-3 rounded-xl shadow-lg">REGISTRAR</button>
                             </div>
                         </div>
                     </div>
-                
+                </div>
                     <div class="bg-white p-6 border-x border-b shadow-sm mb-6">
                         <div class="relative mb-4">
                             <i class="fas fa-search absolute left-3 top-3 text-slate-400"></i>
@@ -192,7 +197,7 @@
 
     <script>
         // --- PEGA TU URL AQUÍ ---
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwt6oDX6DNuPqv2ecKNRvbESlUvez6pfk14ELfikh7Pp27RjQT4yHMkicv40Ij3wIFC/exec"; 
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxia7mWQc-vdfykcCynTKTnJewnrPg6VVXg8mq_dA5AU92o97hOCAhD5jXG1ZvL3t_y/exec"; 
 
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -396,6 +401,61 @@ function recalcularCarrito() {
     document.getElementById('res-total').innerText = '$' + total.toLocaleString();
     document.getElementById('res-pendiente').innerText = '$' + (total - anticipo).toLocaleString();
 }
+let dbGlobal = { productos: [], clientes: [] };
+
+// Cargar todo al inicio
+async function inicializarSistema() {
+    const response = await fetch(SCRIPT_URL);
+    dbGlobal = await response.json();
+    actualizarSelectClientes();
+}
+
+function actualizarSelectClientes() {
+    const select = document.getElementById('cot-cliente-select');
+    select.innerHTML = dbGlobal.clientes.map(c => `<option value="${c.nombre}">${c.nombre} (${c.empresa})</option>`).join('');
+}
+
+async function registrarClienteExcel() {
+    const nuevo = {
+        tipo: "nuevo_cliente",
+        nombre: document.getElementById('nc-nombre').value,
+        empresa: document.getElementById('nc-empresa').value,
+        direccion: document.getElementById('nc-direccion').value,
+        celular: document.getElementById('nc-celular').value,
+        correo: document.getElementById('nc-correo').value
+    };
+    
+    await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(nuevo) });
+    dbGlobal.clientes.push(nuevo); // Actualizar localmente
+    actualizarSelectClientes();
+    document.getElementById('cot-cliente-select').value = nuevo.nombre; // Seleccionar al nuevo
+    cerrarModalCliente();
+}
+
+function buscarProductos() {
+    const term = document.getElementById('busqueda-prod').value.toLowerCase();
+    const table = document.getElementById('resultados-busqueda');
+    if(term.length < 2) return table.innerHTML = "";
+
+    const filtrados = dbGlobal.productos.filter(p => p.nombre.toLowerCase().includes(term));
+    
+    table.innerHTML = filtrados.map(p => `
+        <tr class="border-b hover:bg-slate-50 transition">
+            <td class="p-3 font-bold text-slate-700">${p.nombre}</td>
+            <td class="p-3 text-slate-500 font-bold">${p.stock}</td>
+            <td class="p-3 font-mono text-blue-600 font-bold">$${p.precio}</td>
+            <td class="p-3"><input type="number" id="cant-${p.id}" value="1" min="1" max="${p.stock}" class="w-16 p-1 border rounded-lg text-center font-bold"></td>
+            <td class="p-3 text-right">
+                <button onclick="agregarAlCarrito('${p.nombre}', ${p.precio}, ${p.costo}, '${p.id}')" class="bg-blue-600 text-white px-3 py-1 rounded-lg shadow-md hover:bg-blue-700 transition">+</button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function abrirModalCliente() { document.getElementById('modal-nuevo-cliente').classList.remove('hidden'); }
+function cerrarModalCliente() { document.getElementById('modal-nuevo-cliente').classList.add('hidden'); }
+
+inicializarSistema();
 
 // Llama a esta función dentro de tu lógica de navegación cuando se abra 'inventario'
         renderAgenda();

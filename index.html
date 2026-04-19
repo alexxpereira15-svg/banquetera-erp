@@ -3,263 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Banquetera360 - ERP Maestro</title>
+    <title>Banquetera360 ERP</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         .page { display: none; }
-        .page.active { display: block; }
-        .sidebar-item.active { background-color: #2563eb; color: white; }
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        @media print { .no-print { display: none; } }
+        .page.active { display: block !important; }
+        .sidebar-item.active { background-color: #2563eb !important; color: white !important; }
     </style>
 </head>
 <body class="bg-slate-100 font-sans text-slate-900">
     <div class="flex h-screen overflow-hidden">
         
         <aside class="w-64 bg-slate-900 text-white flex flex-col shrink-0 shadow-2xl">
-            <div class="p-6 text-2xl font-black border-b border-slate-800 italic uppercase">
-                B360<span class="text-blue-400">.POS</span>
-            </div>
+            <div class="p-6 text-2xl font-black border-b border-slate-800 italic uppercase">B360<span class="text-blue-400">.POS</span></div>
             <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
-                <button onclick="showPage('dashboard')" id="btn-dashboard" class="sidebar-item active w-full text-left p-3 hover:bg-slate-800 rounded-xl transition flex items-center font-bold">
-                    <i class="fas fa-chart-line w-6"></i> Dashboard
-                </button>
-                <button onclick="showPage('cotizaciones')" id="btn-cotizaciones" class="sidebar-item w-full text-left p-3 hover:bg-slate-800 rounded-xl transition flex items-center font-bold">
-                    <i class="fas fa-shopping-cart w-6"></i> Ventas / POS
-                </button>
-                <button onclick="showPage('agenda')" id="btn-agenda" class="sidebar-item w-full text-left p-3 hover:bg-slate-800 rounded-xl transition flex items-center font-bold">
-                    <i class="fas fa-calendar-alt w-6"></i> Agenda
-                </button>
-                <button onclick="showPage('inventario')" id="btn-inventario" class="sidebar-item w-full text-left p-3 hover:bg-slate-800 rounded-xl transition flex items-center font-bold">
-                    <i class="fas fa-boxes w-6"></i> Inventario
-                </button>
+                <button onclick="showPage('dashboard')" id="btn-dashboard" class="sidebar-item active w-full text-left p-3 hover:bg-slate-800 rounded-xl transition flex items-center font-bold"><i class="fas fa-chart-line w-6"></i> Dashboard</button>
+                <button onclick="showPage('cotizaciones')" id="btn-cotizaciones" class="sidebar-item w-full text-left p-3 hover:bg-slate-800 rounded-xl transition flex items-center font-bold"><i class="fas fa-shopping-cart w-6"></i> Ventas / POS</button>
+                <button onclick="showPage('agenda')" id="btn-agenda" class="sidebar-item w-full text-left p-3 hover:bg-slate-800 rounded-xl transition flex items-center font-bold"><i class="fas fa-calendar-alt w-6"></i> Agenda</button>
+                <button onclick="showPage('inventario')" id="btn-inventario" class="sidebar-item w-full text-left p-3 hover:bg-slate-800 rounded-xl transition flex items-center font-bold"><i class="fas fa-boxes w-6"></i> Inventario</button>
             </nav>
-            <div class="p-4 bg-slate-800 text-[10px] text-center text-slate-500 font-black tracking-widest uppercase italic">Mérida ERP 2026</div>
         </aside>
 
         <main class="flex-1 flex flex-col overflow-hidden">
             <header class="bg-white shadow-sm p-4 flex justify-between items-center z-10 border-b">
-                <h1 id="page-title" class="text-xs font-black text-slate-400 uppercase tracking-tighter">Dashboard</h1>
-                <div class="flex items-center gap-4">
-                    <span id="save-status" class="text-[10px] font-black text-green-600 bg-green-50 px-2 py-1 rounded-full uppercase">Sincronizado</span>
-                </div>
+                <h1 id="page-title" class="text-xs font-black text-slate-400 uppercase">DASHBOARD</h1>
+                <span id="save-status" class="text-[10px] font-black text-orange-600 bg-orange-50 px-2 py-1 rounded-full uppercase">Esperando Conexión</span>
             </header>
 
             <div class="p-6 overflow-y-auto flex-1">
-                
                 <div id="dashboard" class="page active">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                        <div class="bg-white p-8 rounded-[2rem] shadow-sm border">
-                            <p class="text-slate-400 text-[10px] font-black uppercase mb-1">Eventos en Mérida</p>
-                            <p id="count-eventos" class="text-5xl font-black text-slate-800">0</p>
-                        </div>
-                        <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-blue-100">
-                            <p class="text-slate-400 text-[10px] font-black uppercase mb-1">Cartera de Clientes</p>
-                            <p id="count-clientes" class="text-5xl font-black text-blue-600">0</p>
-                        </div>
-                        <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-emerald-100">
-                            <p class="text-slate-400 text-[10px] font-black uppercase mb-1">Artículos en Catálogo</p>
-                            <p id="count-stock" class="text-5xl font-black text-emerald-500">0</p>
-                        </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-blue-100"><p class="text-slate-400 text-[10px] font-black uppercase">Eventos</p><p id="count-eventos" class="text-5xl font-black">0</p></div>
+                        <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-blue-100"><p class="text-slate-400 text-[10px] font-black uppercase">Clientes</p><p id="count-clientes" class="text-5xl font-black">0</p></div>
+                        <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-blue-100"><p class="text-slate-400 text-[10px] font-black uppercase">Stock</p><p id="count-stock" class="text-5xl font-black">0</p></div>
                     </div>
                 </div>
 
                 <div id="cotizaciones" class="page">
-                    <div class="bg-white p-6 rounded-t-3xl border border-b-0 shadow-sm">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end mb-6">
-                            <div>
-                                <label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Cliente</label>
-                                <div class="flex gap-2">
-                                    <select id="cot-cliente-select" class="flex-1 p-3 bg-slate-50 border rounded-xl font-bold text-blue-600 border-blue-100 outline-none">
-                                        <option value="">Cargando...</option>
-                                    </select>
-                                    <button onclick="abrirModalCliente()" class="bg-blue-600 text-white px-4 rounded-xl font-black text-xs uppercase shadow-lg">Nuevo</button>
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Concepto del Evento</label>
-                                <input type="text" id="cot-comentario" placeholder="Ej: XV Años Hacienda Teya" class="w-full p-3 bg-slate-50 border rounded-xl outline-none font-medium">
-                            </div>
+                    <div class="bg-white p-6 rounded-[2rem] shadow-sm border">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <select id="cot-cliente-select" class="p-3 bg-slate-50 border rounded-xl font-bold"></select>
+                            <input type="text" id="cot-comentario" placeholder="Concepto del evento" class="p-3 bg-slate-50 border rounded-xl">
                         </div>
-                        <div class="relative">
-                            <i class="fas fa-search absolute left-4 top-4 text-slate-400"></i>
-                            <input type="text" id="busqueda-prod" oninput="buscarProductos()" placeholder="Buscar mobiliario..." class="w-full pl-12 p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl outline-none focus:border-blue-500 font-bold transition-all">
-                            <div class="absolute right-4 top-3 flex gap-2">
-                                <button onclick="verCarrito()" class="bg-slate-900 text-white px-6 py-2 rounded-xl relative shadow-xl font-black text-xs uppercase">
-                                    <i class="fas fa-file-invoice-dollar mr-2"></i> Carrito
-                                    <span id="cart-count" class="absolute -top-2 -right-2 bg-red-500 text-[10px] px-2 py-0.5 rounded-full font-black">0</span>
-                                </button>
-                                <button onclick="limpiarCotizacion()" class="bg-red-50 text-red-500 px-3 rounded-xl border border-red-100"><i class="fas fa-trash-alt"></i></button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-white border-x border-b rounded-b-3xl shadow-sm overflow-hidden">
-                        <table class="w-full text-sm">
-                            <thead class="bg-slate-50 text-[10px] uppercase text-slate-400 font-black border-b">
-                                <tr><th class="p-4">Artículo</th><th class="p-4">Almacén</th><th class="p-4">Precio</th><th class="p-4 w-24 text-center">Cant.</th><th class="p-4 text-right">Acción</th></tr>
-                            </thead>
-                            <tbody id="resultados-busqueda"></tbody>
-                        </table>
+                        <input type="text" id="busqueda-prod" oninput="buscarProductos()" placeholder="Buscar producto..." class="w-full p-4 bg-slate-50 border rounded-2xl mb-4">
+                        <button onclick="verCarrito()" class="bg-blue-600 text-white px-6 py-2 rounded-xl font-bold uppercase text-xs">Abrir Carrito (<span id="cart-count">0</span>)</button>
+                        <table class="w-full mt-4 text-sm"><tbody id="resultados-busqueda"></tbody></table>
                     </div>
                 </div>
 
                 <div id="agenda" class="page">
-                    <div class="bg-white p-8 rounded-[2rem] shadow-sm border mb-8">
-                        <h2 class="text-xl font-black mb-6 uppercase italic">Nuevo Registro en Agenda</h2>
-                        <form id="event-form" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <input type="text" id="ev-cliente" placeholder="Nombre Cliente" class="p-4 bg-slate-50 border rounded-2xl outline-none">
-                            <input type="date" id="ev-fecha" class="p-4 bg-slate-50 border rounded-2xl outline-none">
-                            <input type="text" id="ev-lugar" placeholder="Hacienda / Local" class="p-4 bg-slate-50 border rounded-2xl outline-none">
-                            <button type="button" onclick="saveEvent()" class="bg-blue-600 text-white font-black p-4 rounded-2xl col-span-full shadow-lg">GUARDAR EN CALENDARIO</button>
-                        </form>
+                    <div class="bg-white p-6 rounded-[2rem] shadow-sm border mb-6">
+                        <h2 class="font-black mb-4 italic uppercase">Agendar Evento</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
+                            <input type="text" id="ev-cliente" placeholder="Cliente" class="p-3 border rounded-xl">
+                            <input type="date" id="ev-fecha" class="p-3 border rounded-xl">
+                            <input type="text" id="ev-lugar" placeholder="Lugar" class="p-3 border rounded-xl">
+                            <button onclick="saveEvent()" class="bg-slate-900 text-white p-3 rounded-xl font-bold col-span-full">AGENDAR</button>
+                        </div>
                     </div>
-                    <div class="bg-white rounded-[2rem] shadow-sm overflow-hidden border">
-                        <table class="w-full text-left">
-                            <thead class="bg-slate-900 text-white text-[10px] font-black uppercase">
-                                <tr><th class="p-5">Cliente</th><th class="p-5">Fecha</th><th class="p-5">Ubicación</th></tr>
-                            </thead>
-                            <tbody id="agenda-table-body" class="text-sm font-medium"></tbody>
-                        </table>
+                    <div class="bg-white rounded-2xl shadow-sm border overflow-hidden">
+                        <table class="w-full"><tbody id="agenda-table-body"></tbody></table>
                     </div>
                 </div>
 
                 <div id="inventario" class="page">
-                    <div id="lista-inventario" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+                    <div id="lista-inventario" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
                 </div>
-
             </div>
         </main>
     </div>
 
-    <div id="modal-carrito" class="hidden fixed inset-0 bg-slate-900/95 z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-[2.5rem] w-full max-w-5xl max-h-[90vh] overflow-y-auto p-10 shadow-2xl">
-            <div class="flex justify-between items-start mb-8 border-b pb-6">
+    <div id="modal-carrito" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-[2rem] w-full max-w-4xl p-8 max-h-[90vh] overflow-y-auto">
+            <h2 class="text-2xl font-black mb-4">DETALLE DE VENTA</h2>
+            <table class="w-full mb-6"><tbody id="items-carrito"></tbody></table>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-6 rounded-2xl">
                 <div>
-                    <h3 class="text-3xl font-black text-slate-900 uppercase italic">Revisión de Venta</h3>
-                    <p id="info-cliente-carrito" class="text-blue-600 font-bold text-sm mt-1"></p>
-                </div>
-                <button onclick="cerrarCarrito()" class="text-slate-300 hover:text-red-500 text-4xl">&times;</button>
-            </div>
-            
-            <table class="w-full text-sm mb-8">
-                <thead class="text-[10px] uppercase text-slate-400 font-black border-b">
-                    <tr><th>Producto</th><th class="text-right">Precio</th><th class="text-center">Cant.</th><th class="text-right">Subtotal</th></tr>
-                </thead>
-                <tbody id="items-carrito"></tbody>
-            </table>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 border-t pt-8">
-                <div class="space-y-4">
-                    <div class="bg-slate-50 p-4 rounded-2xl border flex items-center gap-3">
-                        <input type="checkbox" id="cot-factura" onchange="recalcularCarrito()" class="w-5 h-5 accent-blue-600">
-                        <label class="text-[10px] font-black uppercase text-slate-500 tracking-widest italic">¿El cliente requiere IVA? (16%)</label>
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Seleccionar Método de Pago</label>
-                        <select id="cot-metodo-pago" onchange="recalcularCarrito()" class="w-full p-4 border rounded-xl font-bold bg-white">
-                            <option value="Efectivo">Efectivo</option>
-                            <option value="Transferencia">Transferencia Bancaria</option>
-                            <option value="Tarjeta de Crédito">Tarjeta de Crédito (+3.5%)</option>
-                            <option value="Tarjeta de Débito">Tarjeta de Débito (+3.5%)</option>
-                            <option value="PayPal">PayPal (+5.5%)</option>
-                        </select>
-                    </div>
-                    <div class="bg-orange-50 p-4 rounded-2xl">
-                        <label class="block text-[10px] font-black text-orange-400 uppercase mb-1 italic">Anticipo Recibido</label>
-                        <input type="number" id="cot-anticipo" value="0" oninput="recalcularCarrito()" class="w-full bg-transparent border-none text-2xl font-black text-orange-600 outline-none">
+                    <label class="block text-[10px] font-black uppercase mb-1">Método de Pago</label>
+                    <select id="cot-metodo-pago" onchange="recalcularCarrito()" class="w-full p-3 border rounded-xl font-bold">
+                        <option value="Efectivo">Efectivo</option>
+                        <option value="Transferencia">Transferencia</option>
+                        <option value="Tarjeta de Crédito">Tarjeta de Crédito (+3.5%)</option>
+                        <option value="Tarjeta de Débito">Tarjeta de Débito (+3.5%)</option>
+                        <option value="PayPal">PayPal (+5.5%)</option>
+                    </select>
+                    <div class="mt-4 flex items-center gap-2">
+                        <input type="checkbox" id="cot-factura" onchange="recalcularCarrito()" class="w-5 h-5">
+                        <label class="font-bold text-xs uppercase">Generar con IVA (16%)</label>
                     </div>
                 </div>
-
-                <div class="bg-slate-900 rounded-[2rem] p-8 text-white space-y-3">
-                    <div class="flex justify-between opacity-50 text-[10px] font-bold"><span>SUBTOTAL</span><span id="res-subtotal">$0.00</span></div>
-                    <div class="flex justify-between opacity-50 text-[10px] font-bold"><span>COMISIÓN PASARELA</span><span id="res-comision">$0.00</span></div>
-                    <div class="flex justify-between opacity-50 text-[10px] font-bold"><span>IVA 16%</span><span id="res-iva">$0.00</span></div>
-                    <div class="flex justify-between text-4xl font-black border-t border-slate-700 pt-4 text-blue-400"><span>TOTAL</span><span id="res-total">$0.00</span></div>
-                    <div class="flex justify-between text-sm font-bold text-orange-400 italic pt-2"><span>Saldo por Cobrar</span><span id="res-pendiente">$0.00</span></div>
+                <div class="text-right space-y-1">
+                    <p class="text-xs">Subtotal: <span id="res-subtotal">$0.00</span></p>
+                    <p class="text-xs">IVA: <span id="res-iva">$0.00</span></p>
+                    <p class="text-3xl font-black text-blue-600">TOTAL: <span id="res-total">$0.00</span></p>
                 </div>
             </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-10">
-                <button onclick="descargarCotizacionPDF()" class="bg-slate-800 text-white font-black p-5 rounded-2xl hover:bg-slate-700 uppercase text-xs transition">
-                    <i class="fas fa-file-pdf mr-2 text-red-400"></i> Generar Cotización para Cliente
-                </button>
-                <button onclick="finalizarVenta()" class="bg-blue-600 text-white font-black p-5 rounded-2xl hover:bg-blue-700 uppercase text-xs shadow-xl transition">
-                    <i class="fas fa-check-circle mr-2"></i> Cerrar y Guardar Venta
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-nuevo-cliente" class="hidden fixed inset-0 bg-slate-900/90 z-[60] flex items-center justify-center p-4">
-        <div class="bg-white rounded-[2.5rem] w-full max-w-md p-10 shadow-2xl">
-            <h3 class="text-xl font-black mb-6 uppercase">Nuevo Cliente</h3>
-            <div class="space-y-3">
-                <input type="text" id="nc-nombre" placeholder="Nombre Completo" class="w-full p-4 bg-slate-50 border rounded-2xl">
-                <input type="text" id="nc-empresa" value="Particular" class="w-full p-4 bg-slate-50 border rounded-2xl font-bold text-blue-600">
-                <input type="text" id="nc-direccion" placeholder="Dirección en Mérida" class="w-full p-4 bg-slate-50 border rounded-2xl">
-                <input type="text" id="nc-celular" placeholder="WhatsApp" class="w-full p-4 bg-slate-50 border rounded-2xl">
-                <input type="email" id="nc-correo" placeholder="Correo Electrónico" class="w-full p-4 bg-slate-50 border rounded-2xl">
-            </div>
-            <div class="flex gap-2 mt-8">
-                <button onclick="cerrarModalCliente()" class="flex-1 bg-slate-100 p-4 rounded-2xl font-bold uppercase text-xs">Cancelar</button>
-                <button onclick="registrarClienteExcel()" class="flex-1 bg-blue-600 text-white p-4 rounded-2xl font-bold uppercase text-xs">Registrar</button>
+            <div class="flex gap-2 mt-6">
+                <button onclick="cerrarCarrito()" class="flex-1 bg-slate-200 p-4 rounded-xl font-bold">CERRAR</button>
+                <button onclick="descargarCotizacionPDF()" class="flex-1 bg-slate-900 text-white p-4 rounded-xl font-bold">PDF</button>
+                <button onclick="finalizarVenta()" class="flex-1 bg-blue-600 text-white p-4 rounded-xl font-bold">FINALIZAR</button>
             </div>
         </div>
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxYeDIm0-GX3sfeOtvCeSDYO2GNOfB-9sOEK6IKLMXIyP-yZAOCVqKQpnpW3JMgjAYz/exec"; // <--- PEGA TU URL DE APPS SCRIPT AQUÍ
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxYeDIm0-GX3sfeOtvCeSDYO2GNOfB-9sOEK6IKLMXIyP-yZAOCVqKQpnpW3JMgjAYz/exec"; // <--- PON TU URL AQUÍ
         let dbGlobal = { productos: [], clientes: [], eventos: [] };
         let carrito = [];
 
+        // --- NAVEGACIÓN (ESTA FUNCIÓN AHORA ES INDEPENDIENTE Y SIEMPRE FUNCIONARÁ) ---
+        function showPage(pageId) {
+            // Ocultar todas las páginas
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(p => p.classList.remove('active'));
+
+            // Desactivar todos los botones
+            const buttons = document.querySelectorAll('.sidebar-item');
+            buttons.forEach(b => b.classList.remove('active'));
+
+            // Mostrar la elegida
+            const targetPage = document.getElementById(pageId);
+            if(targetPage) targetPage.classList.add('active');
+
+            // Activar botón elegido
+            const targetBtn = document.getElementById('btn-' + pageId);
+            if(targetBtn) targetBtn.classList.add('active');
+
+            // Cambiar título
+            document.getElementById('page-title').innerText = pageId.toUpperCase();
+        }
+
+        // --- CONEXIÓN A DATOS ---
         async function inicializarSistema() {
+            if(SCRIPT_URL === "TU_URL_AQUÍ") return;
             try {
                 const response = await fetch(SCRIPT_URL);
                 dbGlobal = await response.json();
-                actualizarSelectClientes();
-                renderInventario();
-                renderAgenda();
-                document.getElementById('count-eventos').innerText = dbGlobal.eventos.length;
-                document.getElementById('count-clientes').innerText = dbGlobal.clientes.length;
-                document.getElementById('count-stock').innerText = dbGlobal.productos.length;
-            } catch (e) { console.error("Error cargando DB:", e); }
+                actualizarComponentes();
+                document.getElementById('save-status').innerText = "Online";
+                document.getElementById('save-status').className = "text-[10px] font-black text-green-600 bg-green-50 px-2 py-1 rounded-full uppercase";
+            } catch (e) {
+                console.error("Error de conexión:", e);
+                document.getElementById('save-status').innerText = "Modo Offline";
+            }
         }
 
-        function showPage(p) {
-            // 1. Ocultar todas las páginas
-            const pages = document.querySelectorAll('.page');
-            pages.forEach(page => {
-                page.style.display = 'none';
-                page.classList.remove('active');
-            });
-        
-            // 2. Quitar el color azul de todos los botones
-            const buttons = document.querySelectorAll('.sidebar-item');
-            buttons.forEach(btn => {
-                btn.classList.remove('active', 'bg-blue-600', 'text-white');
-            });
-        
-            // 3. Mostrar la página seleccionada
-            const targetPage = document.getElementById(p);
-            if (targetPage) {
-                targetPage.style.display = 'block';
-                targetPage.classList.add('active');
-            }
-        
-            // 4. Pintar de azul el botón seleccionado
-            const targetBtn = document.getElementById('btn-' + p);
-            if (targetBtn) {
-                targetBtn.classList.add('active', 'bg-blue-600', 'text-white');
-            }
-        
-            // 5. Actualizar el título del header
-            const title = document.getElementById('page-title');
-            if (title) title.innerText = p.toUpperCase();
+        function actualizarComponentes() {
+            document.getElementById('count-eventos').innerText = dbGlobal.eventos.length;
+            document.getElementById('count-clientes').innerText = dbGlobal.clientes.length;
+            document.getElementById('count-stock').innerText = dbGlobal.productos.length;
+            
+            document.getElementById('cot-cliente-select').innerHTML = '<option value="">Seleccionar Cliente</option>' + 
+                dbGlobal.clientes.map(c => `<option value="${c.nombre}">${c.nombre}</option>`).join('');
+            
+            document.getElementById('agenda-table-body').innerHTML = dbGlobal.eventos.map(ev => 
+                `<tr class="border-b"><td class="p-4 font-bold uppercase">${ev.cliente}</td><td class="p-4">${ev.fecha}</td><td class="p-4 italic">${ev.lugar}</td></tr>`).join('');
+            
+            document.getElementById('lista-inventario').innerHTML = dbGlobal.productos.map(p => `
+                <div class="bg-white p-4 rounded-2xl border">
+                    <p class="text-lg font-black uppercase">${p.nombre}</p>
+                    <p class="text-blue-600 font-bold">$${p.precio} | Stock: ${p.stock}</p>
+                </div>`).join('');
         }
 
-        // LÓGICA DE BÚSQUEDA Y CARRITO
         function buscarProductos() {
             const term = document.getElementById('busqueda-prod').value.toLowerCase();
             const table = document.getElementById('resultados-busqueda');
@@ -267,140 +174,57 @@
             const filtrados = dbGlobal.productos.filter(p => p.nombre.toLowerCase().includes(term));
             table.innerHTML = filtrados.map(p => `
                 <tr class="border-b">
-                    <td class="p-4 font-black uppercase text-xs">${p.nombre}</td>
-                    <td class="p-4"><span class="bg-slate-100 px-2 py-1 rounded-full font-bold text-[10px]">${p.stock}</span></td>
-                    <td class="p-4 font-bold">$${p.precio}</td>
-                    <td class="p-4 text-center"><input type="number" id="cant-${p.id}" value="1" min="1" class="w-16 border rounded text-center font-bold"></td>
-                    <td class="p-4 text-right"><button onclick="agregarAlCarrito('${p.nombre}', ${p.precio}, ${p.costo}, '${p.id}', '${p.proveedor}')" class="bg-blue-600 text-white px-4 py-1 rounded-xl font-black text-[10px]">+</button></td>
-                </tr>
-            `).join('');
+                    <td class="p-3 font-bold uppercase text-xs">${p.nombre}</td>
+                    <td class="p-3">$${p.precio}</td>
+                    <td class="p-3 text-right"><button onclick="agregarAlCarrito('${p.nombre}', ${p.precio}, ${p.costo}, '${p.id}')" class="bg-blue-600 text-white px-3 py-1 rounded-lg">+</button></td>
+                </tr>`).join('');
         }
 
-        function agregarAlCarrito(nombre, precio, costo, id, proveedor) {
-            const cant = parseInt(document.getElementById('cant-'+id).value);
+        function agregarAlCarrito(nombre, precio, costo, id) {
             const item = carrito.find(i => i.nombre === nombre);
-            if(item) item.cant += cant; else carrito.push({ id, nombre, precio, costo, cant, proveedor });
+            if(item) item.cant++; else carrito.push({ id, nombre, precio, costo, cant: 1 });
             document.getElementById('cart-count').innerText = carrito.reduce((a,b)=>a+b.cant, 0);
         }
 
         function verCarrito() {
-            const cliente = document.getElementById('cot-cliente-select').value;
-            if(!cliente) return alert("Selecciona un cliente");
-            const cliData = dbGlobal.clientes.find(c => c.nombre === cliente) || {};
-            document.getElementById('info-cliente-carrito').innerText = `${cliente} | ${cliData.empresa || 'Particular'}`;
             const table = document.getElementById('items-carrito');
-            table.innerHTML = carrito.map(item => `
-                <tr class="border-b text-xs">
-                    <td class="p-3 font-bold uppercase">${item.nombre}</td>
-                    <td class="p-3 text-right">$${item.precio.toLocaleString()}</td>
-                    <td class="p-3 text-center">${item.cant}</td>
-                    <td class="p-3 text-right font-black">$${(item.precio * item.cant).toLocaleString()}</td>
-                </tr>
-            `).join('');
+            table.innerHTML = carrito.map(i => `
+                <tr class="border-b">
+                    <td class="p-2 uppercase font-bold text-xs">${i.nombre}</td>
+                    <td class="p-2">x ${i.cant}</td>
+                    <td class="p-2 text-right">$${(i.precio * i.cant).toLocaleString()}</td>
+                </tr>`).join('');
             recalcularCarrito();
             document.getElementById('modal-carrito').classList.remove('hidden');
         }
 
         function recalcularCarrito() {
-            let subtotal = carrito.reduce((acc, item) => acc + (item.precio * item.cant), 0);
-            const metodo = document.getElementById('cot-metodo-pago').value;
-            let com = (metodo.includes("Tarjeta")) ? subtotal * 0.035 : (metodo === "PayPal") ? subtotal * 0.055 : 0;
-            let iva = document.getElementById('cot-factura').checked ? (subtotal + com) * 0.16 : 0;
-            let total = subtotal + com + iva;
-            let ant = parseFloat(document.getElementById('cot-anticipo').value) || 0;
+            let sub = carrito.reduce((acc, i) => acc + (i.precio * i.cant), 0);
+            const m = document.getElementById('cot-metodo-pago').value;
+            let com = (m.includes("Tarjeta")) ? sub * 0.035 : (m === "PayPal") ? sub * 0.055 : 0;
+            let iva = document.getElementById('cot-factura').checked ? (sub + com) * 0.16 : 0;
+            let total = sub + com + iva;
 
-            document.getElementById('res-subtotal').innerText = '$' + subtotal.toLocaleString();
-            document.getElementById('res-comision').innerText = '$' + com.toLocaleString();
+            document.getElementById('res-subtotal').innerText = '$' + sub.toLocaleString();
             document.getElementById('res-iva').innerText = '$' + iva.toLocaleString();
             document.getElementById('res-total').innerText = '$' + total.toLocaleString();
-            document.getElementById('res-pendiente').innerText = '$' + (total - ant).toLocaleString();
         }
 
-        // GENERACIÓN DE PDF PROFESIONAL
         function descargarCotizacionPDF() {
-            const cliente = document.getElementById('cot-cliente-select').value;
-            const cliData = dbGlobal.clientes.find(c => c.nombre === cliente) || {};
-            const subtotal = document.getElementById('res-subtotal').innerText;
-            const iva = document.getElementById('res-iva').innerText;
-            const total = document.getElementById('res-total').innerText;
-            
             const win = window.open('', '_blank');
-            win.document.write(`
-                <html>
-                <head><script src="https://cdn.tailwindcss.com"></script></head>
-                <body class="p-10 font-sans">
-                    <div class="flex justify-between border-b-4 border-blue-600 pb-4 mb-8">
-                        <div><h1 class="text-3xl font-black italic">B360.ERP</h1><p class="text-[10px] font-bold">MÉRIDA, YUCATÁN</p></div>
-                        <div class="text-right"><h2 class="text-xl font-bold text-blue-600">COTIZACIÓN</h2><p class="text-xs">Fecha: ${new Date().toLocaleDateString()}</p></div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4 mb-8">
-                        <div class="bg-slate-100 p-4 rounded-xl"><p class="text-[10px] font-black text-blue-600 uppercase">Cliente</p><p class="font-black uppercase">${cliente}</p><p class="text-xs">${cliData.direccion || ''}</p></div>
-                        <div class="bg-slate-100 p-4 rounded-xl"><p class="text-[10px] font-black text-blue-600 uppercase">Pago y Transferencia</p><p class="text-xs font-bold">BANAMEX | CLABE: 0123 4567 8901 2345 67</p></div>
-                    </div>
-                    <table class="w-full mb-8 text-sm">
-                        <thead class="bg-slate-800 text-white uppercase text-[10px]">
-                            <tr><th class="p-2 text-left">Cant.</th><th class="p-2 text-left">Descripción</th><th class="p-2 text-right">Precio</th><th class="p-2 text-right">Importe</th></tr>
-                        </thead>
-                        <tbody>
-                            ${carrito.map(i => `<tr class="border-b"><td class="p-2">${i.cant}</td><td class="p-2 font-bold uppercase">${i.nombre}</td><td class="p-2 text-right">$${i.precio.toLocaleString()}</td><td class="p-2 text-right">$${(i.precio * i.cant).toLocaleString()}</td></tr>`).join('')}
-                        </tbody>
-                    </table>
-                    <div class="flex justify-end"><div class="w-64 space-y-1 text-right">
-                        <p class="text-xs">Subtotal: ${subtotal}</p>
-                        <p class="text-xs">IVA 16%: ${iva}</p>
-                        <p class="text-2xl font-black text-blue-600">TOTAL: ${total}</p>
-                    </div></div>
-                    <script>window.onload = function() { window.print(); }</s` + `cript>
-                </body>
-                </html>
-            `);
+            win.document.write(`<html><head><script src="https://cdn.tailwindcss.com"></script></head><body class="p-10">
+                <h1 class="text-3xl font-black italic border-b-4 border-blue-600 pb-2">COTIZACIÓN B360</h1>
+                <p class="mt-4 font-bold">Cliente: ${document.getElementById('cot-cliente-select').value}</p>
+                <table class="w-full mt-6">
+                    <tr class="bg-slate-900 text-white uppercase text-[10px]"><th class="p-2 text-left">Desc</th><th class="p-2 text-right">Importe</th></tr>
+                    ${carrito.map(i => `<tr class="border-b"><td class="p-2 uppercase font-bold">${i.nombre} (x${i.cant})</td><td class="p-2 text-right">$${(i.precio * i.cant).toLocaleString()}</td></tr>`).join('')}
+                </table>
+                <div class="mt-6 text-right font-black text-2xl text-blue-600">TOTAL: ${document.getElementById('res-total').innerText}</div>
+                <script>window.onload = function(){ window.print(); }</s` + `cript></body></html>`);
         }
 
-        async function finalizarVenta() {
-            const data = {
-                tipo: "finalizar_venta",
-                cliente: document.getElementById('cot-cliente-select').value,
-                total: document.getElementById('res-total').innerText,
-                anticipo: document.getElementById('cot-anticipo').value,
-                metodo: document.getElementById('cot-metodo-pago').value,
-                comentario: document.getElementById('cot-comentario').value,
-                detalle: JSON.stringify(carrito)
-            };
-            await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(data) });
-            alert("Venta guardada en Excel");
-            location.reload();
-        }
-
-        // FUNCIONES DE REGISTRO
-        async function registrarClienteExcel() {
-            const d = { tipo: "nuevo_cliente", nombre: document.getElementById('nc-nombre').value, empresa: document.getElementById('nc-empresa').value, direccion: document.getElementById('nc-direccion').value, celular: document.getElementById('nc-celular').value, correo: document.getElementById('nc-correo').value };
-            await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(d) });
-            inicializarSistema(); cerrarModalCliente();
-        }
-
-        async function saveEvent() {
-            const d = { tipo: "evento", cliente: document.getElementById('ev-cliente').value, fecha: document.getElementById('ev-fecha').value, lugar: document.getElementById('ev-lugar').value };
-            await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(d) });
-            inicializarSistema();
-        }
-
-        function renderAgenda() {
-            document.getElementById('agenda-table-body').innerHTML = dbGlobal.eventos.map(ev => `<tr class="border-b"><td class="p-5 font-black uppercase">${ev.cliente}</td><td class="p-5 text-slate-400 font-bold">${ev.fecha}</td><td class="p-5 italic text-slate-500">${ev.lugar}</td></tr>`).join('');
-        }
-
-        function renderInventario() {
-            document.getElementById('lista-inventario').innerHTML = dbGlobal.productos.map(p => `<div class="bg-white p-6 rounded-[2rem] border shadow-sm"><p class="text-[10px] font-black text-slate-400 uppercase">${p.proveedor}</p><p class="text-lg font-black uppercase text-slate-800">${p.nombre}</p><div class="mt-4 flex justify-between"><div><p class="text-[10px] font-bold text-slate-400">Stock</p><p class="text-xl font-black text-blue-600">${p.stock}</p></div><div class="text-right"><p class="text-[10px] font-bold text-slate-400">Precio</p><p class="text-xl font-black">$${p.precio}</p></div></div></div>`).join('');
-        }
-
-        function actualizarSelectClientes() {
-            document.getElementById('cot-cliente-select').innerHTML = '<option value="">-- Seleccionar --</option>' + dbGlobal.clientes.map(c => `<option value="${c.nombre}">${c.nombre} (${c.empresa})</option>`).join('');
-        }
-        
-        function abrirModalCliente() { document.getElementById('modal-nuevo-cliente').classList.remove('hidden'); }
-        function cerrarModalCliente() { document.getElementById('modal-nuevo-cliente').classList.add('hidden'); }
         function cerrarCarrito() { document.getElementById('modal-carrito').classList.add('hidden'); }
-        function limpiarCotizacion() { carrito = []; document.getElementById('cart-count').innerText = "0"; }
-
+        
         window.onload = inicializarSistema;
     </script>
 </body>

@@ -1,11 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Banquetera360 - ERP Real</title>
-    <script src="https://script.google.com/macros/s/AKfycbx0bOMv0gvrHyqPv7fqYOZtipvnK_ZrYjedSOhMUV-KXpfdQjSo6EQ4NXwQLh44ny0y/exec"></script>
+    <title>Banquetera360 - ERP</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         .page { display: none; }
@@ -15,7 +14,6 @@
 </head>
 <body class="bg-gray-100 font-sans">
     <div class="flex h-screen overflow-hidden">
-        <!-- Sidebar -->
         <aside class="w-64 bg-slate-900 text-white flex flex-col shrink-0 shadow-xl">
             <div class="p-6 text-2xl font-bold border-b border-slate-700">
                 Banquetera<span class="text-blue-400">360</span>
@@ -25,139 +23,72 @@
                 <button onclick="showPage('agenda')" class="sidebar-item w-full text-left p-3 hover:bg-slate-800 rounded-lg transition flex items-center"><i class="fas fa-calendar-alt w-6"></i> Agenda</button>
                 <button onclick="showPage('cotizaciones')" class="sidebar-item w-full text-left p-3 hover:bg-slate-800 rounded-lg transition flex items-center"><i class="fas fa-file-invoice-dollar w-6"></i> Cotizaciones</button>
                 <button onclick="showPage('inventario')" class="sidebar-item w-full text-left p-3 hover:bg-slate-800 rounded-lg transition flex items-center"><i class="fas fa-utensils w-6"></i> Inventario</button>
-                <button onclick="showPage('finanzas')" class="sidebar-item w-full text-left p-3 hover:bg-slate-800 rounded-lg transition flex items-center"><i class="fas fa-chart-line w-6"></i> Finanzas</button>
             </nav>
-            <div class="p-4 bg-slate-800 text-xs text-center text-slate-400">
-                V 1.0 - Mérida, Yucatán
-            </div>
+            <div class="p-4 bg-slate-800 text-xs text-center text-slate-400">Mérida, Yucatán</div>
         </aside>
 
-        <!-- Main Content -->
         <main class="flex-1 flex flex-col overflow-hidden">
             <header class="bg-white shadow-md p-4 flex justify-between items-center z-10">
                 <h1 id="page-title" class="text-xl font-bold text-slate-800 uppercase tracking-wider">Dashboard</h1>
-                <div class="flex items-center space-x-4">
-                    <span id="save-status" class="text-xs text-green-600 font-medium bg-green-50 px-2 py-1 rounded">Sistema Listo</span>
-                </div>
+                <span id="save-status" class="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded">Sistema Listo</span>
             </header>
 
             <div class="p-6 overflow-y-auto flex-1">
-                
-                <!-- PÁGINA: DASHBOARD -->
                 <div id="dashboard" class="page active">
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                         <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-blue-500">
-                            <p class="text-slate-400 text-xs font-bold uppercase">Ingresos Mensuales</p>
+                            <p class="text-slate-400 text-xs font-bold uppercase">Ingresos Estimados</p>
                             <p class="text-2xl font-black text-slate-800">$185,000</p>
                         </div>
                         <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-purple-500">
-                            <p class="text-slate-400 text-xs font-bold uppercase">Eventos Confirmados</p>
-                            <p class="text-2xl font-black text-slate-800">12</p>
-                        </div>
-                        <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-green-500">
-                            <p class="text-slate-400 text-xs font-bold uppercase">Utilidad Estimada</p>
-                            <p class="text-2xl font-black text-green-600">42%</p>
+                            <p class="text-slate-400 text-xs font-bold uppercase">Eventos en Agenda</p>
+                            <p id="count-eventos" class="text-2xl font-black text-slate-800">0</p>
                         </div>
                         <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-orange-500">
-                            <p class="text-slate-400 text-xs font-bold uppercase">Pendiente Cobro</p>
-                            <p class="text-2xl font-black text-orange-500">$24,800</p>
+                            <p class="text-slate-400 text-xs font-bold uppercase">Ubicación</p>
+                            <p class="text-2xl font-black text-slate-800">Mérida</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- PÁGINA: AGENDA -->
                 <div id="agenda" class="page">
                     <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 mb-6">
-                        <h2 class="text-lg font-bold mb-4 text-slate-700">Registrar Nuevo Evento</h2>
+                        <h2 class="text-lg font-bold mb-4">Nuevo Evento</h2>
                         <form id="event-form" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-500 mb-1">CLIENTE</label>
-                                <input type="text" id="ev-cliente" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-400 outline-none">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-500 mb-1">FECHA</label>
-                                <input type="date" id="ev-fecha" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-400 outline-none">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-500 mb-1">LUGAR</label>
-                                <input type="text" id="ev-lugar" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-400 outline-none">
-                            </div>
-                            <button type="button" onclick="saveEvent()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold p-3 rounded col-span-full transition shadow-md">GUARDAR EN AGENDA</button>
+                            <input type="text" id="ev-cliente" placeholder="Nombre del Cliente" class="p-2 border rounded">
+                            <input type="date" id="ev-fecha" class="p-2 border rounded">
+                            <input type="text" id="ev-lugar" placeholder="Lugar (Hacienda, Salón...)" class="p-2 border rounded">
+                            <button type="button" onclick="saveEvent()" class="bg-blue-600 text-white font-bold p-2 rounded col-span-full hover:bg-blue-700">GUARDAR EN GOOGLE SHEETS</button>
                         </form>
                     </div>
                     <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-slate-200">
-                        <table class="w-full">
-                            <thead class="bg-slate-50">
-                                <tr class="text-left text-slate-500 text-xs border-b border-slate-200">
-                                    <th class="p-4">CLIENTE</th><th class="p-4">FECHA</th><th class="p-4">LUGAR</th>
-                                </tr>
-                            </thead>
-                            <tbody id="agenda-table-body" class="text-sm">
-                                <!-- Datos cargados por JS -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- PÁGINA: COTIZACIONES -->
-                <div id="cotizaciones" class="page">
-                    <div class="bg-white p-8 rounded-xl shadow-lg max-w-2xl mx-auto border border-slate-200">
-                        <h2 class="text-2xl font-black mb-6 text-center text-slate-800 border-b pb-4">COTIZADOR RÁPIDO</h2>
-                        <div class="space-y-6">
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-xs font-bold text-slate-500 mb-1">NÚMERO DE PERSONAS</label>
-                                    <input type="number" id="cot-personas" value="100" class="w-full p-3 border border-slate-300 rounded text-xl font-bold">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-slate-500 mb-1">PRECIO POR PLATILLO ($)</label>
-                                    <input type="number" id="cot-precio" value="350" class="w-full p-3 border border-slate-300 rounded text-xl font-bold">
-                                </div>
-                            </div>
-                            <div class="bg-slate-50 p-4 rounded-lg border-2 border-dashed border-slate-200">
-                                <p class="text-slate-500 text-sm font-bold text-center mb-2">COSTOS ADICIONALES (MESEROS, MOBILIARIO, ETC)</p>
-                                <input type="number" id="cot-extras" value="0" class="w-full p-3 border border-slate-300 rounded text-xl font-bold text-center">
-                            </div>
-                            <div class="text-center bg-blue-900 text-white p-6 rounded-xl shadow-inner">
-                                <p class="text-sm font-bold opacity-70 mb-1">TOTAL ESTIMADO</p>
-                                <p id="cot-total" class="text-4xl font-black">$0.00</p>
-                            </div>
-                            <button onclick="calculateCot()" class="w-full bg-green-600 hover:bg-green-700 text-white font-black p-4 rounded-lg shadow-lg transition">ACTUALIZAR CÁLCULO</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- PÁGINA: INVENTARIO -->
-                <div id="inventario" class="page">
-                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                         <table class="w-full text-left">
-                            <thead class="bg-slate-50 border-b border-slate-200">
-                                <tr class="text-slate-500 text-xs font-bold">
-                                    <th class="p-4 uppercase">Artículo</th><th class="p-4 uppercase">Stock Actual</th><th class="p-4 uppercase">Estado</th>
-                                </tr>
+                            <thead class="bg-slate-50 text-xs uppercase text-slate-500">
+                                <tr><th class="p-4">Cliente</th><th class="p-4">Fecha</th><th class="p-4">Lugar</th></tr>
                             </thead>
-                            <tbody class="text-sm">
-                                <tr class="border-b border-slate-50">
-                                    <td class="p-4 font-bold">Sillas Tiffany (Blancas)</td><td class="p-4">450</td><td class="p-4"><span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold uppercase">Óptimo</span></td>
-                                </tr>
-                                <tr class="border-b border-slate-50">
-                                    <td class="p-4 font-bold">Mantelería Lujo</td><td class="p-4">15</td><td class="p-4"><span class="bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-bold uppercase">Crítico</span></td>
-                                </tr>
-                            </tbody>
+                            <tbody id="agenda-table-body" class="text-sm"></tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- PÁGINA: FINANZAS -->
-                <div id="finanzas" class="page">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                            <h3 class="font-bold text-slate-800 mb-4 border-b pb-2 italic">Historial de Pagos</h3>
-                            <ul class="space-y-3">
-                                <li class="flex justify-between text-sm"><span class="font-medium text-slate-600 italic">Anticipo Boda Gómez</span> <span class="text-green-600 font-bold">+$15,000</span></li>
-                                <li class="flex justify-between text-sm"><span class="font-medium text-slate-600 italic">Pago Proveedor Carne</span> <span class="text-red-600 font-bold">-$8,400</span></li>
-                            </ul>
+                <div id="cotizaciones" class="page">
+                    <div class="bg-white p-8 rounded-xl shadow-lg max-w-md mx-auto border">
+                        <h2 class="text-xl font-bold mb-4 text-center">Calculadora de Evento</h2>
+                        <div class="space-y-4">
+                            <input type="number" id="cot-pax" placeholder="Número de personas" class="w-full p-2 border rounded">
+                            <input type="number" id="cot-precio" placeholder="Precio por platillo" class="w-full p-2 border rounded">
+                            <div class="bg-blue-900 text-white p-4 rounded text-center">
+                                <p class="text-xs uppercase opacity-70">Total Estimado</p>
+                                <p id="cot-res" class="text-3xl font-black">$0.00</p>
+                            </div>
+                            <button onclick="document.getElementById('cot-res').innerText = '$' + (document.getElementById('cot-pax').value * document.getElementById('cot-precio').value).toLocaleString()" class="w-full bg-green-600 text-white p-2 rounded font-bold">CALCULAR</button>
                         </div>
+                    </div>
+                </div>
+
+                <div id="inventario" class="page">
+                    <div class="bg-white p-6 rounded-xl shadow-sm">
+                        <p class="text-slate-500 italic">Módulo de inventario conectado próximamente...</p>
                     </div>
                 </div>
             </div>
@@ -165,68 +96,58 @@
     </div>
 
     <script>
-        // LÓGICA DE NAVEGACIÓN
+        // --- PEGA TU URL AQUÍ ABAJO ---
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx0bOMv0gvrHyqPv7fqYOZtipvnK_ZrYjedSOhMUV-KXpfdQjSo6EQ4NXwQLh44ny0y/exec"; 
+
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
-            
             document.getElementById(pageId).classList.add('active');
             document.getElementById('page-title').innerText = pageId;
-            
-            // Marcar botón activo
-            event.currentTarget.classList.add('active');
         }
 
-        // LÓGICA DE AGENDA (PERSISTENCIA LOCAL)
-        let eventos = JSON.parse(localStorage.getItem('eventos')) || [
-            {cliente: 'Boda Martínez', fecha: '2026-05-15', lugar: 'Hacienda Viva'},
-            {cliente: 'XV Años Sofía', fecha: '2026-06-20', lugar: 'Salón Royal'}
-        ];
-
-        function renderAgenda() {
+        async function renderAgenda() {
             const table = document.getElementById('agenda-table-body');
-            table.innerHTML = eventos.map(ev => `
-                <tr class="border-b border-slate-50 hover:bg-blue-50 transition">
-                    <td class="p-4 font-bold text-slate-700">${ev.cliente}</td>
-                    <td class="p-4 text-slate-500">${ev.fecha}</td>
-                    <td class="p-4 italic text-slate-500">${ev.lugar}</td>
-                </tr>
-            `).join('');
+            table.innerHTML = '<tr><td colspan="3" class="p-4 text-center animate-pulse text-blue-600 font-bold">Cargando datos de Google Sheets...</td></tr>';
+            try {
+                const response = await fetch(SCRIPT_URL);
+                const eventos = await response.json();
+                document.getElementById('count-eventos').innerText = eventos.length;
+                table.innerHTML = eventos.map(ev => `
+                    <tr class="border-b hover:bg-blue-50">
+                        <td class="p-4 font-bold text-slate-700">${ev.cliente}</td>
+                        <td class="p-4">${ev.fecha}</td>
+                        <td class="p-4 text-slate-500">${ev.lugar}</td>
+                    </tr>
+                `).join('');
+            } catch (e) {
+                table.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-red-500">Error al conectar con la base de datos</td></tr>';
+            }
         }
 
-        function saveEvent() {
+        async function saveEvent() {
             const cliente = document.getElementById('ev-cliente').value;
             const fecha = document.getElementById('ev-fecha').value;
             const lugar = document.getElementById('ev-lugar').value;
+            if(!cliente || !fecha) return alert('Cliente y Fecha son obligatorios');
 
-            if(!cliente || !fecha) return alert('Por favor llena Cliente y Fecha');
-
-            eventos.push({cliente, fecha, lugar});
-            localStorage.setItem('eventos', JSON.stringify(eventos));
-            renderAgenda();
-            
-            // Limpiar form
-            document.getElementById('event-form').reset();
-            
-            // Notificar guardado
             const status = document.getElementById('save-status');
-            status.innerText = "¡Evento Guardado!";
+            status.innerText = "Guardando en la Nube...";
+            status.classList.replace('text-green-600', 'text-orange-600');
+
+            await fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify({ cliente, fecha, lugar })
+            });
+
+            document.getElementById('event-form').reset();
+            await renderAgenda();
+            status.innerText = "¡Sincronizado!";
+            status.classList.replace('text-orange-600', 'text-green-600');
             setTimeout(() => status.innerText = "Sistema Listo", 2000);
         }
 
-        // LÓGICA DE COTIZADOR
-        function calculateCot() {
-            const p = parseFloat(document.getElementById('cot-personas').value);
-            const pr = parseFloat(document.getElementById('cot-precio').value);
-            const ex = parseFloat(document.getElementById('cot-extras').value);
-            
-            const total = (p * pr) + ex;
-            document.getElementById('cot-total').innerText = '$' + total.toLocaleString();
-        }
-
-        // Inicializar
         renderAgenda();
-        calculateCot();
     </script>
 </body>
 </html>

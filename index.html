@@ -67,65 +67,111 @@
                     </div>
                 </div>
 
-               <div id="cotizaciones" class="page">
-                    <div class="max-w-4xl mx-auto">
-                        <div class="flex gap-4 mb-6">
-                            <button onclick="cambiarModoCotizador('eventos')" id="btn-modo-eventos" class="flex-1 p-4 rounded-xl font-black text-sm uppercase tracking-wider border-2 border-blue-600 bg-blue-600 text-white shadow-lg transition">
-                                <i class="fas fa-glass-cheers mr-2"></i> Eventos (Bodas/XV)
-                            </button>
-                            <button onclick="cambiarModoCotizador('renta')" id="btn-modo-renta" class="flex-1 p-4 rounded-xl font-black text-sm uppercase tracking-wider border-2 border-blue-600 text-blue-600 bg-white hover:bg-blue-50 transition">
-                                <i class="fas fa-chair mr-2"></i> Renta de Mobiliario
-                            </button>
-                        </div>
-                
-                        <div id="form-cot-eventos" class="hidden bg-white p-8 rounded-2xl shadow-xl border border-slate-200">
-                            <h3 class="text-xl font-black mb-6 text-slate-800 border-b pb-2">Presupuesto de Banquete</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                                <input type="text" id="ce-cliente" placeholder="Nombre del Cliente" class="p-3 bg-slate-50 border rounded-lg outline-none">
-                                <select id="ce-tipo" class="p-3 bg-slate-50 border rounded-lg outline-none">
-                                    <option>Boda</option>
-                                    <option>XV Años</option>
-                                    <option>Corporativo</option>
-                                </select>
-                                <input type="number" id="ce-pax" oninput="calcEv()" placeholder="Núm. Personas" class="p-3 bg-slate-50 border rounded-lg outline-none">
-                                <input type="number" id="ce-menu" oninput="calcEv()" placeholder="Precio Menú p/p" class="p-3 bg-slate-50 border rounded-lg outline-none">
-                                <textarea id="ce-extras" class="p-3 bg-slate-50 border rounded-lg outline-none col-span-full" placeholder="Extras (Meseros, Música, Decoración...)"></textarea>
-                                <input type="number" id="ce-extras-monto" oninput="calcEv()" placeholder="Monto total de extras ($)" class="p-3 bg-slate-50 border rounded-lg outline-none col-span-full">
+              <div id="cotizaciones" class="page">
+                    <div class="bg-white p-6 rounded-t-2xl shadow-sm border border-b-0">
+                        <div class="flex flex-wrap gap-4 items-end">
+                            <div class="flex-1 min-w-[250px]">
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Cliente / Empresa</label>
+                                <div class="flex gap-2">
+                                    <select id="cot-cliente-select" class="flex-1 p-2 bg-slate-50 border rounded-lg outline-none">
+                                        <option value="">Seleccionar cliente...</option>
+                                        <option value="nuevo">+ Registrar Nuevo Cliente</option>
+                                    </select>
+                                    <select id="cot-tipo-operacion" class="p-2 bg-blue-50 text-blue-700 font-bold border border-blue-200 rounded-lg outline-none">
+                                        <option value="renta">Renta</option>
+                                        <option value="evento">Evento</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="bg-slate-900 text-blue-400 p-6 rounded-xl text-center mb-6">
-                                <p class="text-xs font-bold uppercase">Total Banquete</p>
-                                <p id="total-ev" class="text-4xl font-black">$0.00</p>
+                            <div class="flex-1 min-w-[250px]">
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Comentario Interno (Identificador)</label>
+                                <input type="text" id="cot-comentario" placeholder="Ej: Sillas negras, mesa redonda // Pedro García" class="w-full p-2 bg-slate-50 border rounded-lg outline-none">
                             </div>
-                            <div class="flex flex-col gap-2">
-                                <button onclick="guardarCotEvento()" class="w-full bg-blue-600 text-white font-black p-4 rounded-xl hover:bg-blue-700 shadow-lg transition">
-                                    <i class="fas fa-save mr-2"></i> GUARDAR EN EXCEL
+                            <div class="flex gap-2">
+                                <button onclick="verCarrito()" class="bg-slate-900 text-white p-2 rounded-lg relative">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    <span id="cart-count" class="absolute -top-2 -right-2 bg-red-500 text-[10px] px-1.5 rounded-full">0</span>
                                 </button>
-                                <button onclick="enviarCot(1)" class="w-full bg-green-500 text-white font-black p-4 rounded-xl hover:bg-green-600 shadow-lg">
-                                    <i class="fab fa-whatsapp mr-2"></i> ENVIAR POR WHATSAPP
-                                </button>
+                                <button onclick="limpiarCotizacion()" class="bg-red-100 text-red-600 p-2 rounded-lg"><i class="fas fa-trash"></i></button>
                             </div>
                         </div>
+                    </div>
                 
-                        <div id="form-cot-renta" class="hidden bg-white p-8 rounded-2xl shadow-xl border border-slate-200">
-                            <h3 class="text-xl font-black mb-6 text-slate-800 border-b pb-2">Nota de Renta de Equipo</h3>
-                            <div class="grid grid-cols-1 gap-4 mb-6">
-                                <input type="text" id="cr-cliente" placeholder="Nombre del Cliente" class="p-3 bg-slate-50 border rounded-lg outline-none">
-                                <input type="datetime-local" id="cr-fecha" class="p-3 bg-slate-50 border rounded-lg outline-none">
-                                <textarea id="cr-detalle" rows="4" class="p-3 bg-slate-50 border rounded-lg outline-none" placeholder="Ej: 50 Sillas Tiffany, 5 Mesas Tablón, 5 Manteles Blancos..."></textarea>
-                                <input type="number" id="cr-total" oninput="document.getElementById('total-re').innerText = '$' + (parseFloat(this.value)||0).toLocaleString()" placeholder="Monto Total de Renta ($)" class="p-3 bg-slate-50 border rounded-lg outline-none">
+                    <div class="bg-white p-6 border-x border-b shadow-sm mb-6">
+                        <div class="relative mb-4">
+                            <i class="fas fa-search absolute left-3 top-3 text-slate-400"></i>
+                            <input type="text" id="busqueda-prod" oninput="buscarProductos()" placeholder="Escribe el artículo (ej: Silla Tiffany, Mantel...)" class="w-full pl-10 p-2 bg-slate-50 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead>
+                                    <tr class="text-left text-slate-400 text-[10px] uppercase border-b">
+                                        <th class="p-2">Artículo</th>
+                                        <th class="p-2">Stock</th>
+                                        <th class="p-2">Precio S/IVA</th>
+                                        <th class="p-2">Cantidad</th>
+                                        <th class="p-2 text-right">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="resultados-busqueda">
+                                    </tbody>
+                            </table>
+                        </div>
+                    </div>
+                
+                    <div id="modal-carrito" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+                        <div class="bg-white rounded-3xl w-full max-w-4xl max-h-[90vh] overflow-y-auto p-8 shadow-2xl">
+                            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                                <h3 class="text-2xl font-black italic text-slate-800">Resumen de Cotización</h3>
+                                <button onclick="cerrarCarrito()" class="text-slate-400 hover:text-slate-600 text-2xl">&times;</button>
                             </div>
-                            <div class="bg-slate-900 text-blue-400 p-6 rounded-xl text-center mb-6">
-                                <p class="text-xs font-bold uppercase">Total Renta</p>
-                                <p id="total-re" class="text-4xl font-black">$0.00</p>
+                
+                            <table class="w-full text-sm mb-6">
+                                <thead class="bg-slate-50">
+                                    <tr class="text-left">
+                                        <th class="p-3">Nombre</th>
+                                        <th class="p-3">Costo</th>
+                                        <th class="p-3">Precio Venta</th>
+                                        <th class="p-3">Cant.</th>
+                                        <th class="p-3 text-right">Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="items-carrito"></tbody>
+                            </table>
+                
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 border-t pt-6">
+                                <div class="space-y-4">
+                                    <div class="flex items-center gap-4">
+                                        <label class="flex items-center gap-2 cursor-pointer">
+                                            <input type="checkbox" id="cot-factura" onchange="recalcularCarrito()" class="w-4 h-4 text-blue-600">
+                                            <span class="text-xs font-bold text-slate-700">¿Requiere Factura? (IVA 16%)</span>
+                                        </label>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-slate-400 mb-1">Método de Pago</label>
+                                        <select id="cot-metodo-pago" onchange="recalcularCarrito()" class="w-full p-2 border rounded-lg bg-slate-50 outline-none">
+                                            <option value="efectivo">Efectivo / Transferencia (0%)</option>
+                                            <option value="tarjeta">Tarjeta Crédito/Débito (+3.5%)</option>
+                                            <option value="paypal">PayPal (+5.5%)</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-slate-400 mb-1">Anticipo Recibido ($)</label>
+                                        <input type="number" id="cot-anticipo" value="0" oninput="recalcularCarrito()" class="w-full p-2 border border-blue-200 rounded-lg bg-blue-50 outline-none font-bold">
+                                    </div>
+                                </div>
+                
+                                <div class="bg-slate-50 p-6 rounded-2xl space-y-2">
+                                    <div class="flex justify-between text-slate-500"><span>Subtotal:</span><span id="res-subtotal">$0.00</span></div>
+                                    <div class="flex justify-between text-slate-500"><span>Comisión Pago:</span><span id="res-comision">$0.00</span></div>
+                                    <div class="flex justify-between text-slate-500"><span>IVA (16%):</span><span id="res-iva">$0.00</span></div>
+                                    <div class="flex justify-between text-xl font-black text-slate-900 border-t pt-2"><span>TOTAL:</span><span id="res-total">$0.00</span></div>
+                                    <div class="flex justify-between text-sm font-bold text-blue-600 pt-2 italic"><span>Saldo Pendiente:</span><span id="res-pendiente">$0.00</span></div>
+                                </div>
                             </div>
-                            <div class="flex flex-col gap-2">
-                                <button onclick="guardarCotRenta()" class="w-full bg-blue-600 text-white font-black p-4 rounded-xl hover:bg-blue-700 shadow-lg transition">
-                                    <i class="fas fa-save mr-2"></i> GUARDAR EN EXCEL
-                                </button>
-                                <button onclick="enviarCot(2)" class="w-full bg-green-500 text-white font-black p-4 rounded-xl hover:bg-green-600 shadow-lg">
-                                    <i class="fab fa-whatsapp mr-2"></i> ENVIAR NOTA POR WHATSAPP
-                                </button>
-                            </div>
+                
+                            <button onclick="finalizarVenta()" class="w-full mt-8 bg-green-600 text-white font-black p-4 rounded-xl hover:bg-green-700 shadow-lg">FINALIZAR Y CERRAR VENTA</button>
                         </div>
                     </div>
                 </div>
@@ -293,6 +339,63 @@
                 container.innerHTML = '<p class="text-red-500">Error al cargar inventario</p>';
             }
         }
+
+        let carrito = [];
+let productosDB = []; // Esto se cargará desde Google Sheets
+
+// Simulación de búsqueda (luego se conectará a tu Excel)
+function buscarProductos() {
+    const term = document.getElementById('busqueda-prod').value.toLowerCase();
+    const table = document.getElementById('resultados-busqueda');
+    
+    // Aquí filtrarás la variable productosDB que viene del Excel
+    // Por ahora, mostrará los resultados según escribas
+    if(term.length < 2) { table.innerHTML = ""; return; }
+    
+    // Ejemplo visual de resultado
+    table.innerHTML = `
+        <tr class="border-b hover:bg-slate-50">
+            <td class="p-2 font-bold text-slate-700">Silla Tiffany Blanca</td>
+            <td class="p-2 text-slate-500">450 disp.</td>
+            <td class="p-2 font-mono">$15.00</td>
+            <td class="p-2"><input type="number" id="cant-1" value="1" class="w-16 p-1 border rounded text-center"></td>
+            <td class="p-2 text-right"><button onclick="agregarAlCarrito('Silla Tiffany', 15, 10, 1)" class="bg-blue-600 text-white px-3 py-1 rounded-lg text-xs font-bold">+</button></td>
+        </tr>
+    `;
+}
+
+function agregarAlCarrito(nombre, precio, costo, id) {
+    const cant = parseInt(document.getElementById('cant-'+id).value);
+    carrito.push({ nombre, precio, costo, cant });
+    document.getElementById('cart-count').innerText = carrito.length;
+    alert(nombre + " agregado a la cotización");
+}
+
+function recalcularCarrito() {
+    let subtotal = carrito.reduce((acc, item) => acc + (item.precio * item.cant), 0);
+    
+    // Comisión por método de pago
+    const metodo = document.getElementById('cot-metodo-pago').value;
+    let porcentajeComision = 0;
+    if(metodo === 'tarjeta') porcentajeComision = 0.035;
+    if(metodo === 'paypal') porcentajeComision = 0.055;
+    
+    let comision = subtotal * porcentajeComision;
+    let iva = 0;
+    if(document.getElementById('cot-factura').checked) {
+        iva = (subtotal + comision) * 0.16;
+    }
+    
+    let total = subtotal + comision + iva;
+    let anticipo = parseFloat(document.getElementById('cot-anticipo').value) || 0;
+    
+    // Mostrar en pantalla
+    document.getElementById('res-subtotal').innerText = '$' + subtotal.toLocaleString();
+    document.getElementById('res-comision').innerText = '$' + comision.toLocaleString();
+    document.getElementById('res-iva').innerText = '$' + iva.toLocaleString();
+    document.getElementById('res-total').innerText = '$' + total.toLocaleString();
+    document.getElementById('res-pendiente').innerText = '$' + (total - anticipo).toLocaleString();
+}
 
 // Llama a esta función dentro de tu lógica de navegación cuando se abra 'inventario'
         renderAgenda();

@@ -210,6 +210,25 @@
             document.getElementById('total-ev').innerText = '$' + total.toLocaleString();
             return total;
         }
+        async function guardarCotEvento() {
+            const data = {
+                tipo: "cot_evento",
+                cliente: document.getElementById('ce-cliente').value,
+                tipo_evento: document.getElementById('ce-tipo').value,
+                personas: document.getElementById('ce-pax').value,
+                menu: document.getElementById('ce-menu').value, // Nueva columna D
+                extras_detalle: document.getElementById('ce-extras').value, // Nueva columna E
+                total: calcEv() // Nueva columna F
+            };
+            
+            const status = document.getElementById('save-status');
+            status.innerText = "Guardando Cotización...";
+            
+            await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(data) });
+            
+            status.innerText = "Sistema Listo";
+            alert("Cotización de Evento guardada exitosamente en BD Banquetera 360");
+        }
         
         function enviarCot(tipo) {
             let mensaje = "";

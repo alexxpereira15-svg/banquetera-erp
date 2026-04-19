@@ -67,71 +67,54 @@
                     </div>
                 </div>
 
-                <div id="cotizaciones" class="page">
-                    <div class="bg-white p-8 rounded-2xl shadow-xl max-w-4xl mx-auto border border-slate-200">
-                        <div class="flex justify-between items-center mb-6 border-b pb-4">
-                            <h2 class="text-2xl font-black text-slate-800">Cotizador Inteligente</h2>
-                            <span class="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest">Mérida Elite</span>
-                        </div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                            <div class="space-y-4">
-                                <p class="text-blue-600 font-bold text-xs uppercase tracking-tighter border-b border-blue-100 pb-1">Perfil del Cliente</p>
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase">Nombre del Cliente / Empresa</label>
-                                    <input type="text" id="cot-cliente" class="w-full p-3 bg-slate-50 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition" placeholder="Ej. Boda Familia Peniche">
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase">Tipo de Cliente</label>
-                                    <select id="cot-tipo-cliente" class="w-full p-3 bg-slate-50 border rounded-lg outline-none">
-                                        <option>Particular</option>
-                                        <option>Empresa / Corporativo</option>
-                                        <option>Organizador de Eventos</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase">Tipo de Evento</label>
-                                    <select id="cot-tipo-evento" class="w-full p-3 bg-slate-50 border rounded-lg outline-none">
-                                        <option>Boda</option>
-                                        <option>XV Años</option>
-                                        <option>Corporativo</option>
-                                        <option>Bautizo / Social</option>
-                                    </member>
-                                </div>
-                            </div>
-                
-                            <div class="space-y-4">
-                                <p class="text-blue-600 font-bold text-xs uppercase tracking-tighter border-b border-blue-100 pb-1">Conceptos de Banquetes</p>
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase">Personas</label>
-                                        <input type="number" id="cot-pax" oninput="calcularPro()" class="w-full p-3 bg-slate-50 border rounded-lg outline-none" placeholder="0">
-                                    </div>
-                                    <div>
-                                        <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase">Menú p/p ($)</label>
-                                        <input type="number" id="cot-precio" oninput="calcularPro()" class="w-full p-3 bg-slate-50 border rounded-lg outline-none" placeholder="350">
-                                    </div>
-                                </div>
-                                <div class="grid grid-cols-1 gap-2">
-                                    <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase">Servicios Adicionales (Suma total)</label>
-                                    <input type="number" id="cot-extras-total" oninput="calcularPro()" class="w-full p-3 bg-slate-50 border rounded-lg outline-none" placeholder="Meseros, Mobiliario, Música...">
-                                    <textarea id="cot-detalles" rows="2" class="w-full p-2 text-xs border rounded-lg bg-slate-50" placeholder="Escribe aquí qué incluye (Ej. 10 Meseros, DJ, Barra Libre...)"></textarea>
-                                </div>
-                            </div>
-                        </div>
-                
-                        <div class="bg-slate-900 rounded-2xl p-6 mb-8 text-center border-t-4 border-blue-500">
-                            <p class="text-blue-400 text-xs font-bold uppercase mb-1">Presupuesto Estimado</p>
-                            <p id="cot-total-pro" class="text-5xl font-black text-white">$0.00</p>
-                            <p class="text-slate-500 text-[10px] mt-2 italic">Basado en Mérida, Yucatán. Incluye logística básica.</p>
-                        </div>
-                
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <button onclick="guardarCotizacionPro()" class="bg-blue-600 text-white font-black p-4 rounded-xl hover:bg-blue-700 transition-all shadow-lg flex items-center justify-center">
-                                <i class="fas fa-cloud-upload-alt mr-2"></i> REGISTRAR EN CRM
+               <div id="cotizaciones" class="page">
+                    <div class="max-w-4xl mx-auto">
+                        <div class="flex gap-4 mb-6">
+                            <button onclick="cambiarModoCotizador('eventos')" id="btn-modo-eventos" class="flex-1 p-4 rounded-xl font-black text-sm uppercase tracking-wider border-2 border-blue-600 bg-blue-600 text-white shadow-lg transition">
+                                <i class="fas fa-glass-cheers mr-2"></i> Eventos (Bodas/XV)
                             </button>
-                            <button onclick="enviarWhatsAppPro()" class="bg-green-500 text-white font-black p-4 rounded-xl hover:bg-green-600 transition-all shadow-lg flex items-center justify-center">
-                                <i class="fab fa-whatsapp mr-2 text-xl"></i> ENVIAR COTIZACIÓN
+                            <button onclick="cambiarModoCotizador('renta')" id="btn-modo-renta" class="flex-1 p-4 rounded-xl font-black text-sm uppercase tracking-wider border-2 border-blue-600 text-blue-600 bg-white hover:bg-blue-50 transition">
+                                <i class="fas fa-chair mr-2"></i> Renta de Mobiliario
+                            </button>
+                        </div>
+                
+                        <div id="form-cot-eventos" class="bg-white p-8 rounded-2xl shadow-xl border border-slate-200">
+                            <h3 class="text-xl font-black mb-6 text-slate-800 border-b pb-2">Presupuesto de Banquete</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                                <input type="text" id="ce-cliente" placeholder="Nombre del Cliente" class="p-3 bg-slate-50 border rounded-lg outline-none">
+                                <select id="ce-tipo" class="p-3 bg-slate-50 border rounded-lg outline-none">
+                                    <option>Boda</option>
+                                    <option>XV Años</option>
+                                    <option>Corporativo</option>
+                                </select>
+                                <input type="number" id="ce-pax" oninput="calcEv()" placeholder="Núm. Personas" class="p-3 bg-slate-50 border rounded-lg outline-none">
+                                <input type="number" id="ce-menu" oninput="calcEv()" placeholder="Precio Menú p/p" class="p-3 bg-slate-50 border rounded-lg outline-none">
+                                <textarea id="ce-extras" class="p-3 bg-slate-50 border rounded-lg outline-none col-span-full" placeholder="Extras (Meseros, Música, Decoración...)"></textarea>
+                                <input type="number" id="ce-extras-monto" oninput="calcEv()" placeholder="Monto total de extras ($)" class="p-3 bg-slate-50 border rounded-lg outline-none col-span-full">
+                            </div>
+                            <div class="bg-slate-900 text-blue-400 p-6 rounded-xl text-center mb-6">
+                                <p class="text-xs font-bold uppercase">Total Banquete</p>
+                                <p id="total-ev" class="text-4xl font-black">$0.00</p>
+                            </div>
+                            <button onclick="enviarCot(1)" class="w-full bg-green-500 text-white font-black p-4 rounded-xl hover:bg-green-600 shadow-lg">
+                                <i class="fab fa-whatsapp mr-2"></i> ENVIAR COTIZACIÓN EVENTO
+                            </button>
+                        </div>
+                
+                        <div id="form-cot-renta" class="hidden bg-white p-8 rounded-2xl shadow-xl border border-slate-200">
+                            <h3 class="text-xl font-black mb-6 text-slate-800 border-b pb-2">Nota de Renta de Equipo</h3>
+                            <div class="grid grid-cols-1 gap-4 mb-6">
+                                <input type="text" id="cr-cliente" placeholder="Nombre del Cliente" class="p-3 bg-slate-50 border rounded-lg outline-none">
+                                <input type="datetime-local" id="cr-fecha" class="p-3 bg-slate-50 border rounded-lg outline-none">
+                                <textarea id="cr-detalle" rows="4" class="p-3 bg-slate-50 border rounded-lg outline-none" placeholder="Ej: 50 Sillas Tiffany, 5 Mesas Tablón, 5 Manteles Blancos..."></textarea>
+                                <input type="number" id="cr-total" oninput="document.getElementById('total-re').innerText = '$' + (parseFloat(this.value)||0).toLocaleString()" placeholder="Monto Total de Renta ($)" class="p-3 bg-slate-50 border rounded-lg outline-none">
+                            </div>
+                            <div class="bg-slate-900 text-blue-400 p-6 rounded-xl text-center mb-6">
+                                <p class="text-xs font-bold uppercase">Total Renta</p>
+                                <p id="total-re" class="text-4xl font-black">$0.00</p>
+                            </div>
+                            <button onclick="enviarCot(2)" class="w-full bg-green-500 text-white font-black p-4 rounded-xl hover:bg-green-600 shadow-lg">
+                                <i class="fab fa-whatsapp mr-2"></i> ENVIAR NOTA DE RENTA
                             </button>
                         </div>
                     </div>
@@ -200,54 +183,59 @@
             status.innerText = "Sistema Listo";
         }
 
-        function calcularPro() {
-            const pax = parseFloat(document.getElementById('cot-pax').value) || 0;
-            const precio = parseFloat(document.getElementById('cot-precio').value) || 0;
-            const extras = parseFloat(document.getElementById('cot-extras-total').value) || 0;
-            
-            const total = (pax * precio) + extras;
-            document.getElementById('cot-total-pro').innerText = '$' + total.toLocaleString();
+        // --- FUNCIONES DE NAVEGACIÓN ENTRE COTIZADORES ---
+        function cambiarModoCotizador(modo) {
+            const fe = document.getElementById('form-cot-eventos');
+            const fr = document.getElementById('form-cot-renta');
+            const be = document.getElementById('btn-modo-eventos');
+            const br = document.getElementById('btn-modo-renta');
+        
+            if(modo === 'eventos') {
+                fe.classList.remove('hidden'); fr.classList.add('hidden');
+                be.className = "flex-1 p-4 rounded-xl font-black text-sm uppercase border-2 border-blue-600 bg-blue-600 text-white shadow-lg transition";
+                br.className = "flex-1 p-4 rounded-xl font-black text-sm uppercase border-2 border-blue-600 text-blue-600 bg-white hover:bg-blue-50 transition";
+            } else {
+                fr.classList.remove('hidden'); fe.classList.add('hidden');
+                br.className = "flex-1 p-4 rounded-xl font-black text-sm uppercase border-2 border-blue-600 bg-blue-600 text-white shadow-lg transition";
+                be.className = "flex-1 p-4 rounded-xl font-black text-sm uppercase border-2 border-blue-600 text-blue-600 bg-white hover:bg-blue-50 transition";
+            }
+        }
+        
+        // --- CÁLCULOS Y WHATSAPP ---
+        function calcEv() {
+            const pax = parseFloat(document.getElementById('ce-pax').value) || 0;
+            const menu = parseFloat(document.getElementById('ce-menu').value) || 0;
+            const ext = parseFloat(document.getElementById('ce-extras-monto').value) || 0;
+            const total = (pax * menu) + ext;
+            document.getElementById('total-ev').innerText = '$' + total.toLocaleString();
             return total;
         }
         
-        async function guardarCotizacionPro() {
-            const data = {
-                tipo: "cotizacion",
-                tipo_cliente: document.getElementById('cot-tipo-cliente').value,
-                tipo_evento: document.getElementById('cot-tipo-evento').value,
-                cliente: document.getElementById('cot-cliente').value,
-                personas: document.getElementById('cot-pax').value,
-                menu: document.getElementById('cot-precio').value,
-                extras_detalle: document.getElementById('cot-detalles').value,
-                total: calcularPro()
-            };
+        function enviarCot(tipo) {
+            let mensaje = "";
+            if(tipo === 1) { // Lógica para Eventos
+                const c = document.getElementById('ce-cliente').value;
+                const p = document.getElementById('ce-pax').value;
+                const e = document.getElementById('ce-extras').value;
+                const t = calcEv();
+                if(!c || t <= 0) return alert('Por favor llena los datos del evento');
         
-            if(!data.cliente || data.total <= 0) return alert('Datos incompletos');
+                mensaje = `*BANQUETERA 360 - Mérida*%0A%0A` +
+                          `Hola *${c}*, aquí la propuesta para tu evento:%0A%0A` +
+                          `👥 *Invitados:* ${p}%0A` +
+                          `✨ *Servicios:* ${e || 'Banquete Completo'}%0A` +
+                          `💰 *TOTAL ESTIMADO:* $${t.toLocaleString()}`;
+            } else { // Lógica para Renta
+                const c = document.getElementById('cr-cliente').value;
+                const d = document.getElementById('cr-detalle').value;
+                const t = parseFloat(document.getElementById('cr-total').value) || 0;
+                if(!c || !d) return alert('Por favor llena los datos de la renta');
         
-            const status = document.getElementById('save-status');
-            status.innerText = "Registrando en CRM...";
-            
-            await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(data) });
-        
-            status.innerText = "Sistema Listo";
-            alert('¡Cliente y Cotización registrados exitosamente!');
-        }
-        
-        function enviarWhatsAppPro() {
-            const cliente = document.getElementById('cot-cliente').value;
-            const evento = document.getElementById('cot-tipo-evento').value;
-            const pax = document.getElementById('cot-pax').value;
-            const total = calcularPro();
-            const detalles = document.getElementById('cot-detalles').value;
-            
-            const mensaje = `*PRESUPUESTO PROFESIONAL - BANQUETERA 360*%0A%0A` +
-                `Estimado/a *${cliente}*, es un gusto saludarle. Presentamos la propuesta para su *${evento}*:%0A%0A` +
-                `👥 *Invitados:* ${pax}%0A` +
-                `📋 *Servicios incluidos:* ${detalles || 'Banquete Completo'}%0A%0A` +
-                `*INVERSIÓN TOTAL:* $${total.toLocaleString()}%0A%0A` +
-                `_Nota: Precios sujetos a cambios según logística en Mérida y alrededores._%0A%0A` +
-                `¿Le gustaría que agendemos una cita para definir el menú?`;
-            
+                mensaje = `*NOTA DE RENTA - BANQUETERA 360*%0A%0A` +
+                          `Cliente: *${c}*%0A` +
+                          `📦 *Equipo solicitado:*%0A${d}%0A%0A` +
+                          `💰 *TOTAL RENTA:* $${t.toLocaleString()}`;
+            }
             window.open(`https://wa.me/?text=${mensaje}`, '_blank');
         }
         async function cargarInventario() {

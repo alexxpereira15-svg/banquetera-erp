@@ -228,11 +228,35 @@
         }
 
         function showPage(p) {
-            document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
-            document.querySelectorAll('.sidebar-item').forEach(x => x.classList.remove('active'));
-            document.getElementById(p).classList.add('active');
-            document.getElementById('btn-'+p).classList.add('active');
-            document.getElementById('page-title').innerText = p.toUpperCase();
+            // 1. Ocultar todas las páginas
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => {
+                page.style.display = 'none';
+                page.classList.remove('active');
+            });
+        
+            // 2. Quitar el color azul de todos los botones
+            const buttons = document.querySelectorAll('.sidebar-item');
+            buttons.forEach(btn => {
+                btn.classList.remove('active', 'bg-blue-600', 'text-white');
+            });
+        
+            // 3. Mostrar la página seleccionada
+            const targetPage = document.getElementById(p);
+            if (targetPage) {
+                targetPage.style.display = 'block';
+                targetPage.classList.add('active');
+            }
+        
+            // 4. Pintar de azul el botón seleccionado
+            const targetBtn = document.getElementById('btn-' + p);
+            if (targetBtn) {
+                targetBtn.classList.add('active', 'bg-blue-600', 'text-white');
+            }
+        
+            // 5. Actualizar el título del header
+            const title = document.getElementById('page-title');
+            if (title) title.innerText = p.toUpperCase();
         }
 
         // LÓGICA DE BÚSQUEDA Y CARRITO

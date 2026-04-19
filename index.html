@@ -96,9 +96,14 @@
                                 <p class="text-xs font-bold uppercase">Total Banquete</p>
                                 <p id="total-ev" class="text-4xl font-black">$0.00</p>
                             </div>
-                            <button onclick="enviarCot(1)" class="w-full bg-green-500 text-white font-black p-4 rounded-xl hover:bg-green-600 shadow-lg">
-                                <i class="fab fa-whatsapp mr-2"></i> ENVIAR COTIZACIÓN EVENTO
-                            </button>
+                            <div class="flex flex-col gap-2">
+                                <button onclick="guardarCotEvento()" class="w-full bg-blue-600 text-white font-black p-4 rounded-xl hover:bg-blue-700 shadow-lg transition">
+                                    <i class="fas fa-save mr-2"></i> GUARDAR EN EXCEL
+                                </button>
+                                <button onclick="enviarCot(1)" class="w-full bg-green-500 text-white font-black p-4 rounded-xl hover:bg-green-600 shadow-lg">
+                                    <i class="fab fa-whatsapp mr-2"></i> ENVIAR POR WHATSAPP
+                                </button>
+                            </div>
                         </div>
                 
                         <div id="form-cot-renta" class="hidden bg-white p-8 rounded-2xl shadow-xl border border-slate-200">
@@ -113,9 +118,14 @@
                                 <p class="text-xs font-bold uppercase">Total Renta</p>
                                 <p id="total-re" class="text-4xl font-black">$0.00</p>
                             </div>
-                            <button onclick="enviarCot(2)" class="w-full bg-green-500 text-white font-black p-4 rounded-xl hover:bg-green-600 shadow-lg">
-                                <i class="fab fa-whatsapp mr-2"></i> ENVIAR NOTA DE RENTA
-                            </button>
+                            <div class="flex flex-col gap-2">
+                                <button onclick="guardarCotRenta()" class="w-full bg-blue-600 text-white font-black p-4 rounded-xl hover:bg-blue-700 shadow-lg transition">
+                                    <i class="fas fa-save mr-2"></i> GUARDAR EN EXCEL
+                                </button>
+                                <button onclick="enviarCot(2)" class="w-full bg-green-500 text-white font-black p-4 rounded-xl hover:bg-green-600 shadow-lg">
+                                    <i class="fab fa-whatsapp mr-2"></i> ENVIAR NOTA POR WHATSAPP
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

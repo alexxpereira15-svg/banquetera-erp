@@ -2,230 +2,320 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Banquetera360 ERP</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Boda & Finanzas App</title>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&family=Cormorant+Garamond:wght@600&display=swap" rel="stylesheet">
     <style>
-        .page { display: none; }
-        .page.active { display: block !important; }
-        .sidebar-item.active { background-color: #2563eb !important; color: white !important; }
+        :root {
+            --rose: #c9717a; --rose-dark: #8b3f47; --gold: #c9a96e; --cream: #fdf9f5;
+            --text: #2c1f22; --bg: #f8f9fa; --card: #ffffff; --success: #6aaa8a; --danger: #e74c3c;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Jost', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 70px; }
+        
+        /* Navegación Principal */
+        .main-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; border-top: 1px solid #eee; z-index: 1000; }
+        .nav-btn { flex: 1; padding: 15px; text-align: center; font-size: 0.8rem; cursor: pointer; color: #888; }
+        .nav-btn.active { color: var(--rose); border-top: 3px solid var(--rose); font-weight: 600; }
+
+        /* Estructura de Secciones */
+        header { background: white; padding: 15px; text-align: center; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 900; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        main { padding: 15px; }
+        .card { background: var(--card); border-radius: 16px; padding: 16px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        
+        /* Dashboards */
+        .countdown-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 15px 0; }
+        .count-item { background: var(--rose-light, #fdf2f2); padding: 10px; border-radius: 12px; text-align: center; border: 1px solid var(--rose); }
+        
+        /* Listas y Filas */
+        .row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f1f1f1; }
+        .p-bar { height: 8px; background: #eee; border-radius: 4px; overflow: hidden; margin-top: 5px; }
+        .p-fill { height: 100%; background: var(--success); transition: 0.3s; }
+        
+        /* Formularios y Modales */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
+        .modal-content { background: white; padding: 20px; border-radius: 20px; width: 100%; max-width: 400px; }
+        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 10px; font-size: 1rem; }
+        .btn { padding: 12px 20px; border-radius: 10px; border: none; font-weight: 600; cursor: pointer; width: 100%; margin-top: 10px; }
+        .btn-rose { background: var(--rose); color: white; }
+        .btn-outline { background: none; border: 1px solid var(--rose); color: var(--rose); }
+        
+        /* Tags Invitados */
+        .tag { font-size: 0.7rem; padding: 3px 8px; border-radius: 5px; color: white; }
+        .tag-pend { background: #95a5a6; } .tag-sent { background: #3498db; } .tag-conf { background: var(--success); }
+        
+        .hidden { display: none; }
     </style>
 </head>
-<body class="bg-slate-100 font-sans text-slate-900">
-    <div class="flex h-screen overflow-hidden">
-        
-        <aside class="w-64 bg-slate-900 text-white flex flex-col shrink-0 shadow-2xl">
-            <div class="p-6 text-2xl font-black border-b border-slate-800 italic uppercase">B360<span class="text-blue-400">.POS</span></div>
-            <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
-                <button onclick="showPage('dashboard')" id="btn-dashboard" class="sidebar-item active w-full text-left p-3 hover:bg-slate-800 rounded-xl transition flex items-center font-bold"><i class="fas fa-chart-line w-6"></i> Dashboard</button>
-                <button onclick="showPage('cotizaciones')" id="btn-cotizaciones" class="sidebar-item w-full text-left p-3 hover:bg-slate-800 rounded-xl transition flex items-center font-bold"><i class="fas fa-shopping-cart w-6"></i> Ventas / POS</button>
-                <button onclick="showPage('agenda')" id="btn-agenda" class="sidebar-item w-full text-left p-3 hover:bg-slate-800 rounded-xl transition flex items-center font-bold"><i class="fas fa-calendar-alt w-6"></i> Agenda</button>
-                <button onclick="showPage('inventario')" id="btn-inventario" class="sidebar-item w-full text-left p-3 hover:bg-slate-800 rounded-xl transition flex items-center font-bold"><i class="fas fa-boxes w-6"></i> Inventario</button>
-            </nav>
-        </aside>
+<body>
 
-        <main class="flex-1 flex flex-col overflow-hidden">
-            <header class="bg-white shadow-sm p-4 flex justify-between items-center z-10 border-b">
-                <h1 id="page-title" class="text-xs font-black text-slate-400 uppercase">DASHBOARD</h1>
-                <span id="save-status" class="text-[10px] font-black text-orange-600 bg-orange-50 px-2 py-1 rounded-full uppercase">Esperando Conexión</span>
-            </header>
+<header>
+    <h1 style="font-family: 'Cormorant Garamond'; font-size: 1.4rem;">💍 Boda & Finanzas</h1>
+    <div style="font-size: 0.7rem; color: #888;">Usuario: <span id="display-user">Yo</span></div>
+</header>
 
-            <div class="p-6 overflow-y-auto flex-1">
-                <div id="dashboard" class="page active">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-blue-100"><p class="text-slate-400 text-[10px] font-black uppercase">Eventos</p><p id="count-eventos" class="text-5xl font-black">0</p></div>
-                        <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-blue-100"><p class="text-slate-400 text-[10px] font-black uppercase">Clientes</p><p id="count-clientes" class="text-5xl font-black">0</p></div>
-                        <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-blue-100"><p class="text-slate-400 text-[10px] font-black uppercase">Stock</p><p id="count-stock" class="text-5xl font-black">0</p></div>
-                    </div>
-                </div>
-
-                <div id="cotizaciones" class="page">
-                    <div class="bg-white p-6 rounded-[2rem] shadow-sm border">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                            <select id="cot-cliente-select" class="p-3 bg-slate-50 border rounded-xl font-bold"></select>
-                            <input type="text" id="cot-comentario" placeholder="Concepto del evento" class="p-3 bg-slate-50 border rounded-xl">
-                        </div>
-                        <input type="text" id="busqueda-prod" oninput="buscarProductos()" placeholder="Buscar producto..." class="w-full p-4 bg-slate-50 border rounded-2xl mb-4">
-                        <button onclick="verCarrito()" class="bg-blue-600 text-white px-6 py-2 rounded-xl font-bold uppercase text-xs">Abrir Carrito (<span id="cart-count">0</span>)</button>
-                        <table class="w-full mt-4 text-sm"><tbody id="resultados-busqueda"></tbody></table>
-                    </div>
-                </div>
-
-                <div id="agenda" class="page">
-                    <div class="bg-white p-6 rounded-[2rem] shadow-sm border mb-6">
-                        <h2 class="font-black mb-4 italic uppercase">Agendar Evento</h2>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
-                            <input type="text" id="ev-cliente" placeholder="Cliente" class="p-3 border rounded-xl">
-                            <input type="date" id="ev-fecha" class="p-3 border rounded-xl">
-                            <input type="text" id="ev-lugar" placeholder="Lugar" class="p-3 border rounded-xl">
-                            <button onclick="saveEvent()" class="bg-slate-900 text-white p-3 rounded-xl font-bold col-span-full">AGENDAR</button>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-2xl shadow-sm border overflow-hidden">
-                        <table class="w-full"><tbody id="agenda-table-body"></tbody></table>
-                    </div>
-                </div>
-
-                <div id="inventario" class="page">
-                    <div id="lista-inventario" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <div id="modal-carrito" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-[2rem] w-full max-w-4xl p-8 max-h-[90vh] overflow-y-auto">
-            <h2 class="text-2xl font-black mb-4">DETALLE DE VENTA</h2>
-            <table class="w-full mb-6"><tbody id="items-carrito"></tbody></table>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-6 rounded-2xl">
-                <div>
-                    <label class="block text-[10px] font-black uppercase mb-1">Método de Pago</label>
-                    <select id="cot-metodo-pago" onchange="recalcularCarrito()" class="w-full p-3 border rounded-xl font-bold">
-                        <option value="Efectivo">Efectivo</option>
-                        <option value="Transferencia">Transferencia</option>
-                        <option value="Tarjeta de Crédito">Tarjeta de Crédito (+3.5%)</option>
-                        <option value="Tarjeta de Débito">Tarjeta de Débito (+3.5%)</option>
-                        <option value="PayPal">PayPal (+5.5%)</option>
-                    </select>
-                    <div class="mt-4 flex items-center gap-2">
-                        <input type="checkbox" id="cot-factura" onchange="recalcularCarrito()" class="w-5 h-5">
-                        <label class="font-bold text-xs uppercase">Generar con IVA (16%)</label>
-                    </div>
-                </div>
-                <div class="text-right space-y-1">
-                    <p class="text-xs">Subtotal: <span id="res-subtotal">$0.00</span></p>
-                    <p class="text-xs">IVA: <span id="res-iva">$0.00</span></p>
-                    <p class="text-3xl font-black text-blue-600">TOTAL: <span id="res-total">$0.00</span></p>
-                </div>
-            </div>
-            <div class="flex gap-2 mt-6">
-                <button onclick="cerrarCarrito()" class="flex-1 bg-slate-200 p-4 rounded-xl font-bold">CERRAR</button>
-                <button onclick="descargarCotizacionPDF()" class="flex-1 bg-slate-900 text-white p-4 rounded-xl font-bold">PDF</button>
-                <button onclick="finalizarVenta()" class="flex-1 bg-blue-600 text-white p-4 rounded-xl font-bold">FINALIZAR</button>
-            </div>
+<main id="app-container">
+    <section id="view-boda">
+        <div class="card" onclick="openModal('modal-date')">
+            <h3 style="font-size: 0.9rem; color: var(--rose);">Faltan para la Boda:</h3>
+            <div id="wedding-countdown" class="countdown-grid"></div>
         </div>
-    </div>
 
-    <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwwUWR8YdDVz9IRLBoYZeBQNfV6s0lHlJ1CDXvnedK6_QZrA8VU2Mp9BBYWBnGYFOve/exec"; // <--- PON TU URL AQUÍ
-        let dbGlobal = { productos: [], clientes: [], eventos: [] };
-        let carrito = [];
+        <div class="card">
+            <div class="section-header">
+                <h3>Metas / Conceptos</h3>
+                <button class="btn-outline" style="width: auto; padding: 4px 10px;" onclick="openModal('modal-concept')">+ Nuevo</button>
+            </div>
+            <div id="list-concepts"></div>
+        </div>
 
-        // --- NAVEGACIÓN (ESTA FUNCIÓN AHORA ES INDEPENDIENTE Y SIEMPRE FUNCIONARÁ) ---
-        function showPage(pageId) {
-            // Ocultar todas las páginas
-            const pages = document.querySelectorAll('.page');
-            pages.forEach(p => p.classList.remove('active'));
+        <div class="card">
+            <div class="section-header">
+                <h3>Invitados</h3>
+                <button class="btn-outline" style="width: auto; padding: 4px 10px;" onclick="openModal('modal-guest')">+ Nuevo</button>
+            </div>
+            <div id="list-guests"></div>
+        </div>
+    </section>
 
-            // Desactivar todos los botones
-            const buttons = document.querySelectorAll('.sidebar-item');
-            buttons.forEach(b => b.classList.remove('active'));
+    <section id="view-finanzas" class="hidden">
+        <div class="card" style="background: var(--rose-dark); color: white;">
+            <p style="font-size: 0.8rem; opacity: 0.8;">Ahorro Disponible para Boda</p>
+            <h2 id="total-ahorro" style="font-size: 2rem;">$0.00</h2>
+            <button class="btn" style="background: rgba(255,255,255,0.2); color: white;" onclick="openModal('modal-ahorro')">Registrar Movimiento</button>
+        </div>
 
-            // Mostrar la elegida
-            const targetPage = document.getElementById(pageId);
-            if(targetPage) targetPage.classList.add('active');
+        <div class="card">
+            <div class="section-header">
+                <h3>Deudas / Préstamos</h3>
+                <button class="btn-outline" style="width: auto; padding: 4px 10px;" onclick="openModal('modal-debt')">+ Nueva</button>
+            </div>
+            <div id="list-debts"></div>
+        </div>
+    </section>
 
-            // Activar botón elegido
-            const targetBtn = document.getElementById('btn-' + pageId);
-            if(targetBtn) targetBtn.classList.add('active');
+    <section id="view-settings" class="hidden">
+        <div class="card">
+            <h3>Sincronizar con Pareja</h3>
+            <p style="font-size: 0.8rem; margin: 10px 0;">Copia este código y envíalo por mensaje para actualizar el otro celular:</p>
+            <button class="btn btn-rose" onclick="exportData()">Copiar Datos (Exportar)</button>
+            <button class="btn btn-outline" onclick="importData()">Pegar Datos (Importar)</button>
+        </div>
+        <div class="card">
+            <label>¿Quién está usando la app?</label>
+            <select id="user-config" onchange="changeUser(this.value)">
+                <option value="Yo">Yo</option>
+                <option value="Pareja">Pareja</option>
+            </select>
+        </div>
+    </section>
+</main>
 
-            // Cambiar título
-            document.getElementById('page-title').innerText = pageId.toUpperCase();
+<nav class="main-nav">
+    <div class="nav-btn active" onclick="showView('boda')">💒 Boda</div>
+    <div class="nav-btn" onclick="showView('finanzas')">💰 Finanzas</div>
+    <div class="nav-btn" onclick="showView('settings')">⚙️ Ajustes</div>
+</nav>
+
+<div id="modal-date" class="modal"><div class="modal-content">
+    <h3>Fecha de la Boda</h3>
+    <input type="date" id="input-date-val">
+    <button class="btn btn-rose" onclick="saveWeddingDate()">Guardar Fecha</button>
+    <button class="btn" onclick="closeModal('modal-date')">Cerrar</button>
+</div></div>
+
+<div id="modal-concept" class="modal"><div class="modal-content">
+    <h3>Nuevo Concepto / Meta</h3>
+    <input type="text" id="c-name" placeholder="Ej: Banquetera">
+    <input type="number" id="c-goal" placeholder="Monto Meta $">
+    <button class="btn btn-rose" onclick="addConcept()">Añadir Meta</button>
+    <button class="btn" onclick="closeModal('modal-concept')">Cancelar</button>
+</div></div>
+
+<div id="modal-guest" class="modal"><div class="modal-content">
+    <h3>Añadir Invitado</h3>
+    <input type="text" id="g-name" placeholder="Nombre">
+    <input type="number" id="g-pax" placeholder="Número de personas (Pax)">
+    <button class="btn btn-rose" onclick="addGuest()">Añadir</button>
+    <button class="btn" onclick="closeModal('modal-guest')">Cancelar</button>
+</div></div>
+
+<div id="modal-ahorro" class="modal"><div class="modal-content">
+    <h3>Movimiento de Dinero</h3>
+    <select id="a-type"><option value="in">Ingreso / Ahorro</option><option value="out">Egreso / Pago</option></select>
+    <input type="number" id="a-amount" placeholder="Monto $">
+    <input type="text" id="a-note" placeholder="Nota">
+    <button class="btn btn-rose" onclick="addSaving()">Registrar</button>
+    <button class="btn" onclick="closeModal('modal-ahorro')">Cancelar</button>
+</div></div>
+
+<div id="modal-debt" class="modal"><div class="modal-content">
+    <h3>Nueva Deuda / Crédito</h3>
+    <input type="text" id="d-name" placeholder="Nombre del préstamo">
+    <input type="number" id="d-total" placeholder="Saldo Inicial $">
+    <input type="number" id="d-months" placeholder="Meses faltantes">
+    <button class="btn btn-rose" onclick="addDebt()">Guardar Deuda</button>
+    <button class="btn" onclick="closeModal('modal-debt')">Cancelar</button>
+</div></div>
+
+<script>
+    // --- MOTOR DE DATOS ---
+    let state = JSON.parse(localStorage.getItem('boda_master_v3')) || {
+        user: 'Yo', weddingDate: '2026-11-01',
+        concepts: [{id: 1, name: 'Banquetera', goal: 54000, paid: 0}],
+        guests: [], savings: 0,
+        debts: [
+            {id: 1, name: 'Mensualidad Crédito', total: 7022, months: 5, paid: 0},
+            {id: 2, name: 'Préstamo NU', total: 5918, months: 4, paid: 0}
+        ],
+        history: []
+    };
+
+    function save() { 
+        localStorage.setItem('boda_master_v3', JSON.stringify(state)); 
+        render(); 
+    }
+
+    function showView(view) {
+        document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+        document.getElementById('view-' + view).classList.remove('hidden');
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+    }
+
+    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+    // --- LÓGICA BODA ---
+    function saveWeddingDate() {
+        state.weddingDate = document.getElementById('input-date-val').value;
+        save(); closeModal('modal-date');
+    }
+
+    function addConcept() {
+        const name = document.getElementById('c-name').value;
+        const goal = parseFloat(document.getElementById('c-goal').value);
+        if(name && goal) {
+            state.concepts.push({id: Date.now(), name, goal, paid: 0});
+            save(); closeModal('modal-concept');
         }
+    }
 
-        // --- CONEXIÓN A DATOS ---
-        async function inicializarSistema() {
-            if(SCRIPT_URL === "TU_URL_AQUÍ") return;
-            try {
-                const response = await fetch(SCRIPT_URL);
-                dbGlobal = await response.json();
-                actualizarComponentes();
-                document.getElementById('save-status').innerText = "Online";
-                document.getElementById('save-status').className = "text-[10px] font-black text-green-600 bg-green-50 px-2 py-1 rounded-full uppercase";
-            } catch (e) {
-                console.error("Error de conexión:", e);
-                document.getElementById('save-status').innerText = "Modo Offline";
-            }
+    function abonoConcept(id) {
+        const amt = parseFloat(prompt("¿Cuánto quieres abonar a esta meta?"));
+        if(amt) {
+            const c = state.concepts.find(x => x.id === id);
+            c.paid += amt;
+            save();
         }
+    }
 
-        function actualizarComponentes() {
-            document.getElementById('count-eventos').innerText = dbGlobal.eventos.length;
-            document.getElementById('count-clientes').innerText = dbGlobal.clientes.length;
-            document.getElementById('count-stock').innerText = dbGlobal.productos.length;
-            
-            document.getElementById('cot-cliente-select').innerHTML = '<option value="">Seleccionar Cliente</option>' + 
-                dbGlobal.clientes.map(c => `<option value="${c.nombre}">${c.nombre}</option>`).join('');
-            
-            document.getElementById('agenda-table-body').innerHTML = dbGlobal.eventos.map(ev => 
-                `<tr class="border-b"><td class="p-4 font-bold uppercase">${ev.cliente}</td><td class="p-4">${ev.fecha}</td><td class="p-4 italic">${ev.lugar}</td></tr>`).join('');
-            
-            document.getElementById('lista-inventario').innerHTML = dbGlobal.productos.map(p => `
-                <div class="bg-white p-4 rounded-2xl border">
-                    <p class="text-lg font-black uppercase">${p.nombre}</p>
-                    <p class="text-blue-600 font-bold">$${p.precio} | Stock: ${p.stock}</p>
-                </div>`).join('');
+    function addGuest() {
+        const name = document.getElementById('g-name').value;
+        const pax = parseInt(document.getElementById('g-pax').value);
+        if(name && pax) {
+            state.guests.push({id: Date.now(), name, pax, status: 'pend'});
+            save(); closeModal('modal-guest');
         }
+    }
 
-        function buscarProductos() {
-            const term = document.getElementById('busqueda-prod').value.toLowerCase();
-            const table = document.getElementById('resultados-busqueda');
-            if(term.length < 2) return table.innerHTML = "";
-            const filtrados = dbGlobal.productos.filter(p => p.nombre.toLowerCase().includes(term));
-            table.innerHTML = filtrados.map(p => `
-                <tr class="border-b">
-                    <td class="p-3 font-bold uppercase text-xs">${p.nombre}</td>
-                    <td class="p-3">$${p.precio}</td>
-                    <td class="p-3 text-right"><button onclick="agregarAlCarrito('${p.nombre}', ${p.precio}, ${p.costo}, '${p.id}')" class="bg-blue-600 text-white px-3 py-1 rounded-lg">+</button></td>
-                </tr>`).join('');
+    function cycleGuestStatus(id) {
+        const g = state.guests.find(x => x.id === id);
+        const states = ['pend', 'sent', 'conf'];
+        let idx = states.indexOf(g.status);
+        g.status = states[(idx + 1) % 3];
+        save();
+    }
+
+    // --- LÓGICA FINANZAS ---
+    function addDebt() {
+        const name = document.getElementById('d-name').value;
+        const total = parseFloat(document.getElementById('d-total').value);
+        const months = parseInt(document.getElementById('d-months').value);
+        if(name && total) {
+            state.debts.push({id: Date.now(), name, total, months, paid: 0});
+            save(); closeModal('modal-debt');
         }
+    }
 
-        function agregarAlCarrito(nombre, precio, costo, id) {
-            const item = carrito.find(i => i.nombre === nombre);
-            if(item) item.cant++; else carrito.push({ id, nombre, precio, costo, cant: 1 });
-            document.getElementById('cart-count').innerText = carrito.reduce((a,b)=>a+b.cant, 0);
+    function addSaving() {
+        const type = document.getElementById('a-type').value;
+        const amt = parseFloat(document.getElementById('a-amount').value);
+        if(amt) {
+            state.savings += (type === 'in' ? amt : -amt);
+            save(); closeModal('modal-ahorro');
         }
+    }
 
-        function verCarrito() {
-            const table = document.getElementById('items-carrito');
-            table.innerHTML = carrito.map(i => `
-                <tr class="border-b">
-                    <td class="p-2 uppercase font-bold text-xs">${i.nombre}</td>
-                    <td class="p-2">x ${i.cant}</td>
-                    <td class="p-2 text-right">$${(i.precio * i.cant).toLocaleString()}</td>
-                </tr>`).join('');
-            recalcularCarrito();
-            document.getElementById('modal-carrito').classList.remove('hidden');
-        }
+    // --- RENDERIZADO ---
+    function render() {
+        // Countdown
+        const diff = new Date(state.weddingDate) - new Date();
+        const d = Math.floor(diff / 86400000);
+        const h = Math.floor((diff % 86400000) / 3600000);
+        document.getElementById('wedding-countdown').innerHTML = `
+            <div class="count-item"><span style="display:block; font-weight:600;">${d}</span> días</div>
+            <div class="count-item"><span style="display:block; font-weight:600;">${h}</span> horas</div>
+            <div class="count-item"><span style="display:block; font-weight:600;">💍</span> Boda</div>
+        `;
 
-        function recalcularCarrito() {
-            let sub = carrito.reduce((acc, i) => acc + (i.precio * i.cant), 0);
-            const m = document.getElementById('cot-metodo-pago').value;
-            let com = (m.includes("Tarjeta")) ? sub * 0.035 : (m === "PayPal") ? sub * 0.055 : 0;
-            let iva = document.getElementById('cot-factura').checked ? (sub + com) * 0.16 : 0;
-            let total = sub + com + iva;
+        // Concepts
+        document.getElementById('list-concepts').innerHTML = state.concepts.map(c => {
+            const perc = Math.min((c.paid / c.goal) * 100, 100);
+            return `
+                <div class="row" onclick="abonoConcept(${c.id})">
+                    <div style="flex:1">
+                        <div style="display:flex; justify-content:space-between">
+                            <strong>${c.name}</strong> <span>$${c.paid} / $${c.goal}</span>
+                        </div>
+                        <div class="p-bar"><div class="p-fill" style="width:${perc}%"></div></div>
+                    </div>
+                </div>
+            `;
+        }).join('');
 
-            document.getElementById('res-subtotal').innerText = '$' + sub.toLocaleString();
-            document.getElementById('res-iva').innerText = '$' + iva.toLocaleString();
-            document.getElementById('res-total').innerText = '$' + total.toLocaleString();
-        }
+        // Guests
+        document.getElementById('list-guests').innerHTML = state.guests.map(g => `
+            <div class="row">
+                <span>${g.name} (${g.pax} pax)</span>
+                <span class="tag tag-${g.status}" onclick="cycleGuestStatus(${g.id})">
+                    ${g.status === 'pend' ? 'Pendiente' : g.status === 'sent' ? 'Enviada' : 'Confirmada'}
+                </span>
+            </div>
+        `).join('');
 
-        function descargarCotizacionPDF() {
-            const win = window.open('', '_blank');
-            win.document.write(`<html><head><script src="https://cdn.tailwindcss.com"></script></head><body class="p-10">
-                <h1 class="text-3xl font-black italic border-b-4 border-blue-600 pb-2">COTIZACIÓN B360</h1>
-                <p class="mt-4 font-bold">Cliente: ${document.getElementById('cot-cliente-select').value}</p>
-                <table class="w-full mt-6">
-                    <tr class="bg-slate-900 text-white uppercase text-[10px]"><th class="p-2 text-left">Desc</th><th class="p-2 text-right">Importe</th></tr>
-                    ${carrito.map(i => `<tr class="border-b"><td class="p-2 uppercase font-bold">${i.nombre} (x${i.cant})</td><td class="p-2 text-right">$${(i.precio * i.cant).toLocaleString()}</td></tr>`).join('')}
-                </table>
-                <div class="mt-6 text-right font-black text-2xl text-blue-600">TOTAL: ${document.getElementById('res-total').innerText}</div>
-                <script>window.onload = function(){ window.print(); }</s` + `cript></body></html>`);
-        }
-
-        function cerrarCarrito() { document.getElementById('modal-carrito').classList.add('hidden'); }
+        // Finanzas
+        document.getElementById('total-ahorro').innerText = `$${state.savings.toLocaleString()}`;
+        document.getElementById('list-debts').innerHTML = state.debts.map(d => `
+            <div class="row">
+                <span><strong>${d.name}</strong><br><small>${d.months} meses restantes</small></span>
+                <span style="color:var(--danger); font-weight:600;">-$${d.total}</span>
+            </div>
+        `).join('');
         
-        window.onload = inicializarSistema;
-    </script>
+        document.getElementById('display-user').innerText = state.user;
+    }
+
+    // --- SYNC ---
+    function exportData() {
+        const str = btoa(JSON.stringify(state));
+        navigator.clipboard.writeText(str);
+        alert("¡Datos copiados! Envíalos a tu pareja.");
+    }
+
+    function importData() {
+        const str = prompt("Pega el código de sincronización aquí:");
+        if(str) {
+            state = JSON.parse(atob(str));
+            save();
+            location.reload();
+        }
+    }
+
+    function changeUser(val) { state.user = val; save(); }
+
+    render();
+</script>
 </body>
 </html>
